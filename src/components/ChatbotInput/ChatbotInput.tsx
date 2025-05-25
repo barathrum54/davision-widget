@@ -1,6 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { KeyboardEvent } from 'react';
 import styles from './ChatbotInput.module.css';
+
+// Add SpeechRecognition type definitions
+interface Window {
+  SpeechRecognition: any;
+  webkitSpeechRecognition: any;
+}
 
 interface ChatbotInputProps {
   onSendMessage: (text: string) => Promise<void>;
@@ -12,13 +18,52 @@ interface ChatbotInputProps {
 
 const ChatbotInput: React.FC<ChatbotInputProps> = ({
   onSendMessage,
-  placeholder = 'Type your message...',
+  placeholder = 'Mesajınızı yazın...',
   maxLength = 500,
   enableVoice = false,
   isLoading = false,
 }) => {
   const [message, setMessage] = useState('');
+  const [isListening, setIsListening] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<any>(null);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if (enableVoice) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = false;
+        recognitionRef.current.lang = 'tr-TR';
+        
+        recognitionRef.current.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript;
+          setMessage(prevMessage => {
+            // Append to existing message if there's already text
+            return prevMessage ? `${prevMessage} ${transcript}` : transcript;
+          });
+          setIsListening(false);
+        };
+        
+        recognitionRef.current.onerror = (event: any) => {
+          console.error('Speech recognition error', event.error);
+          setIsListening(false);
+        };
+        
+        recognitionRef.current.onend = () => {
+          setIsListening(false);
+        };
+      }
+    }
+    
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, [enableVoice]);
 
   const handleSend = async () => {
     if (message.trim() && !isLoading) {
@@ -41,8 +86,47 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
   };
 
   const handleVoiceInput = () => {
-    // Placeholder for voice input functionality
-    alert('Voice input feature is not implemented yet.');
+    if (!recognitionRef.current) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = false;
+        recognitionRef.current.lang = 'tr-TR';
+        
+        recognitionRef.current.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript;
+          setMessage(prevMessage => {
+            return prevMessage ? `${prevMessage} ${transcript}` : transcript;
+          });
+          setIsListening(false);
+        };
+        
+        recognitionRef.current.onerror = (event: any) => {
+          console.error('Speech recognition error', event.error);
+          setIsListening(false);
+        };
+        
+        recognitionRef.current.onend = () => {
+          setIsListening(false);
+        };
+      } else {
+        alert('Speech recognition is not supported in your browser.');
+        return;
+      }
+    }
+    
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (error) {
+        console.error('Speech recognition error:', error);
+      }
+    }
   };
 
   return (
@@ -87,7 +171,7 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
       
       {enableVoice && (
         <button
-          className={styles.voiceButton}
+          className={`${styles.voiceButton} ${isListening ? styles.listening : ''}`}
           onClick={handleVoiceInput}
           aria-label="Voice input"
         >

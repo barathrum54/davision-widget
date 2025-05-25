@@ -52,7 +52,8 @@ const ChatbotWidgetInner: React.FC = () => {
       <ChatbotInput 
         onSendMessage={sendMessage}
         isLoading={isLoading}
-        placeholder="Ask me anything..."
+        placeholder="Mesajınızı yazın..."
+        enableVoice={true}
       />
       
       <ChatbotFooter companyName="Davision" />
