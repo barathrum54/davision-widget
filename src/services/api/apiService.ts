@@ -3,7 +3,9 @@ import type { Product as ChatProduct } from '../../types/chat.types';
 
 export interface ChatResponse {
   response_type: 0 | 1;  // 0 for text, 1 for product carousel
-  text: string;
+  text?: string;
+  message?: string;  // Alternative field name from Lambda
+  response?: string; // Another alternative field name
   products?: ChatProduct[];
 }
 
@@ -26,6 +28,7 @@ class ApiService {
 
   setApiUrl(url: string): void {
     this.apiUrl = url;
+    console.log('API URL set to:', url);
   }
 
   setHeaders(headers: Record<string, string>): void {
@@ -33,9 +36,54 @@ class ApiService {
       ...this.headers,
       ...headers
     };
+    console.log('Headers set to:', this.headers);
+  }
+
+  // Debug method to show the exact request that will be made
+  debugRequest(text: string): void {
+    const payload = { user_text: text };
+    
+    console.log('Debug request info:');
+    console.log('URL:', this.apiUrl);
+    console.log('Method: POST');
+    console.log('Headers:', {
+      'content-type': 'application/json',
+      'sec-ch-ua': '"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"',
+      'sec-ch-ua-mobile': '?0',
+      'sec-ch-ua-platform': '"Windows"'
+    });
+    console.log('Body:', JSON.stringify(payload));
+    console.log('Mode: cors');
+    console.log('Credentials: omit');
+    
+    // Generate code that can be pasted in the console
+    const fetchCode = `
+fetch("${this.apiUrl}", {
+  headers: {
+    "content-type": "application/json",
+    "sec-ch-ua": '"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"'
+  },
+  referrerPolicy: "strict-origin-when-cross-origin",
+  body: '${JSON.stringify(payload)}',
+  method: "POST",
+  mode: "cors",
+  credentials: "omit"
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+`;
+    
+    console.log('Copy and paste this code into your browser console to test:');
+    console.log(fetchCode);
   }
 
   async sendMessage(text: string): Promise<ChatResponse> {
+    // Debug the request first
+    this.debugRequest(text);
+    
     try {
       // Track sending message
       analyticsService.trackEvent({
@@ -43,26 +91,72 @@ class ApiService {
         eventData: { message: text }
       });
 
-      // Create the payload
+      // Create the payload exactly as in the Python example
       const payload = {
         user_text: text
       };
 
-      // Send the request with CORS mode
+      console.log('Sending request to:', this.apiUrl);
+      console.log('With payload:', payload);
+
+      // Send the request with CORS mode - exactly matching the working pattern
       const response = await fetch(this.apiUrl, {
         method: 'POST',
-        headers: this.headers,
+        headers: {
+          'content-type': 'application/json',
+          'sec-ch-ua': '"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"',
+          'sec-ch-ua-mobile': '?0',
+          'sec-ch-ua-platform': '"Windows"'
+        },
         body: JSON.stringify(payload),
-        mode: 'cors', // Add CORS mode to handle cross-origin requests
-        credentials: 'omit' // Don't send cookies
+        referrerPolicy: 'strict-origin-when-cross-origin',
+        mode: 'cors',
+        credentials: 'omit'
       });
 
       if (!response.ok) {
+        console.error('API Error:', response.status, response.statusText);
         throw new Error(`API Error: ${response.status}`);
       }
 
       // Parse the response
-      const data = await response.json();
+      const rawData = await response.json();
+      console.log('Received raw response:', rawData);
+      
+      // Normalize the response format - the Lambda may return a different structure
+      const data: ChatResponse = {
+        response_type: 0,  // Default to text response
+        text: '',          // Default empty text
+        products: []       // Default empty products
+      };
+      
+      // If the response has a text field, use it
+      if (typeof rawData.text === 'string') {
+        data.text = rawData.text;
+      } 
+      // Otherwise check for message or response fields
+      else if (typeof rawData.message === 'string') {
+        data.text = rawData.message;
+      }
+      else if (typeof rawData.response === 'string') {
+        data.text = rawData.response;
+      }
+      // If we have no text field, convert the whole response to string
+      else {
+        data.text = JSON.stringify(rawData);
+      }
+      
+      // If there's a response_type field, use it
+      if (typeof rawData.response_type === 'number') {
+        data.response_type = rawData.response_type;
+      }
+      
+      // If there are products, use them
+      if (Array.isArray(rawData.products)) {
+        data.products = rawData.products.map(this.convertApiProductToChatProduct);
+      }
+      
+      console.log('Normalized response:', data);
       
       // Track successful response
       analyticsService.trackEvent({
@@ -70,13 +164,9 @@ class ApiService {
         eventData: { responseType: data.response_type }
       });
       
-      // Convert API products to chat products if present
-      if (data.products && Array.isArray(data.products)) {
-        data.products = data.products.map(this.convertApiProductToChatProduct);
-      }
-      
       return data;
     } catch (error) {
+      console.error('Request failed:', error);
       return {
         response_type: 0,
         text: "I'm sorry, I couldn't process your request. Please try again later."

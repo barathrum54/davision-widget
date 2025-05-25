@@ -33,7 +33,9 @@ export interface ChatActions {
 export interface ChatContextType extends ChatState, ChatActions {}
 
 export interface ChatResponse {
-  text: string;
+  text?: string;
+  message?: string;
+  response?: string;
   products?: Product[];
   response_type: 0 | 1;
   shouldSendFollowUp?: boolean;

@@ -23,7 +23,7 @@ export interface ChatServiceConfig {
   analyticsEndpoint?: string;
 }
 
-const DEFAULT_API_ENDPOINT = 'https://api.example.com/chat'; // Replace with actual default API endpoint
+const DEFAULT_API_ENDPOINT = 'https://yztksvq2kbbnkrlkroeapqneim0mvaco.lambda-url.us-west-2.on.aws/process_text';
 
 export class ChatService {
   private config: ChatServiceConfig;
@@ -65,12 +65,19 @@ export class ChatService {
       
       const response = await apiService.sendMessage(text);
       
-      return {
-        response_type: response.response_type,
+      // The apiService now normalizes the response, so we just need to add shouldSendFollowUp if needed
+      const chatResponse: ChatResponse = {
+        ...response,
         text: response.text || 'Hello',
-        products: response.products,
+        shouldSendFollowUp: false
       };
+      
+      // Log for debugging
+      console.log("Final chat response:", chatResponse);
+      
+      return chatResponse;
     } catch (error) {
+      console.error("Error in chatService.sendMessage:", error);
       return this.getMockResponse(text);
     }
   }
