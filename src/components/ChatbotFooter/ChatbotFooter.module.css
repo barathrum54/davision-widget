@@ -1,0 +1,23 @@
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  font-size: 10px;
+  color: #735a3c;
+  gap: 4px;
+}
+
+.poweredBy {
+  opacity: 0.7;
+}
+
+.companyName {
+  font-weight: 600;
+}
+
+.logo {
+  height: 12px;
+  width: auto;
+  object-fit: contain;
+} 

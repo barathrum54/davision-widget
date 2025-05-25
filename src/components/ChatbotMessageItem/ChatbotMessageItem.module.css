@@ -1,0 +1,90 @@
+.message {
+  margin-bottom: 16px;
+  max-width: 80%;
+  position: relative;
+}
+
+.messageContent {
+  padding: 10px 12px;
+  border-radius: 12px;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.userMessage {
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.botMessage {
+  align-self: flex-start;
+  margin-right: auto;
+}
+
+.userMessage .messageContent {
+  background-color: #735a3c;
+  color: white;
+  border-radius: 12px 0 12px 12px;
+}
+
+.botMessage .messageContent {
+  background-color: white;
+  color: #333;
+  border-radius: 0 12px 12px 12px;
+}
+
+/* Special handling for messages with products */
+.botMessage.hasProducts {
+  max-width: 110%;
+  width: 110%;
+}
+
+.botMessage.hasProducts .messageContent {
+  border-radius: 0;
+  box-shadow: none;
+  padding: 10px 0 0 12px;
+}
+
+.errorMessage .messageContent {
+  background-color: #ffebee;
+  border: 1px solid #ffcdd2;
+}
+
+.messageText {
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.messageTime {
+  font-size: 10px;
+  opacity: 0.7;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.retryButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #f44336;
+  padding: 4px;
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.retryButton:hover {
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+.productsContainer {
+  margin-top: 12px;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0;
+  overflow: visible;
+  position: relative;
+  padding-right: 24px; /* To accommodate overflow of the next button */
+} 

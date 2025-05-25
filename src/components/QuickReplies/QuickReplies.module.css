@@ -1,0 +1,77 @@
+.quickRepliesContainer {
+  margin: 0;
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.1s ease-out, opacity 0.1s ease-out;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  background-color: #f1ece9;
+}
+
+.quickRepliesContainer.visible {
+  max-height: 110px;
+  opacity: 1;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.quickRepliesRow {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-bottom: 8px;
+  width: 100%;
+  justify-content: center;
+}
+
+.quickRepliesRow:last-child {
+  margin-bottom: 0;
+}
+
+.quickReplyButton {
+  padding: 8px 16px;
+  background-color: #735a3c;
+  border: none;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+  margin-right: 8px;
+}
+
+.quickReplyButton:last-child {
+  margin-right: 0;
+}
+
+.quickReplyButton:hover {
+  opacity: 0.9;
+}
+
+.quickReplyButton:active {
+  opacity: 0.8;
+}
+
+@media (max-width: 480px) {
+  .quickReplyButton {
+    padding: 6px 12px;
+    font-size: 13px;
+    margin-right: 6px;
+  }
+  
+  .quickRepliesRow {
+    margin-bottom: 6px;
+  }
+
+  .quickRepliesContainer.visible {
+    max-height: 90px;
+  }
+} 
