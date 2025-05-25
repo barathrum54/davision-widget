@@ -20,6 +20,7 @@ export interface ChatState {
   isOpen: boolean;
   isLoading: boolean;
   error: string | null;
+  isOffline: boolean;
 }
 
 export interface ChatActions {

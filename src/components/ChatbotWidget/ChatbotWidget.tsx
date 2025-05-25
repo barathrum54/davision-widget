@@ -11,6 +11,7 @@ import ChatbotMessages from '../ChatbotMessages/ChatbotMessages';
 import ChatbotInput from '../ChatbotInput/ChatbotInput';
 import ChatbotFooter from '../ChatbotFooter/ChatbotFooter';
 import QuickReplies from '../QuickReplies/QuickReplies';
+import OfflineOverlay from '../OfflineOverlay/OfflineOverlay';
 
 // Import styles from ChatbotMessages to access the class name
 import messagesStyles from '../ChatbotMessages/ChatbotMessages.module.css';
@@ -26,6 +27,7 @@ const ChatbotWidgetInner: React.FC = () => {
     isOpen,
     isLoading,
     error,
+    isOffline,
     sendMessage,
     toggleChat,
     retryMessage,
@@ -133,9 +135,17 @@ const ChatbotWidgetInner: React.FC = () => {
         enableVoice={true}
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
+        disabled={isOffline}
       />
       
       <ChatbotFooter logoSrc={COMPANY_LOGO} companyName="Davision" />
+      
+      {/* Position the overlay as the last child to cover the entire widget */}
+      {isOffline && (
+        <div className={styles.overlayContainer}>
+          <OfflineOverlay isVisible={true} />
+        </div>
+      )}
     </div>
   );
 };

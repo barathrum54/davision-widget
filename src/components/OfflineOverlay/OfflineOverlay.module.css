@@ -1,0 +1,63 @@
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  border-radius: inherit;
+  animation: fadeIn 0.3s ease-in-out;
+  pointer-events: auto;
+}
+
+.icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  color: #f44336;
+}
+
+.message {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+  max-width: 80%;
+}
+
+.reconnecting {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #666;
+  border-radius: 50%;
+  margin-left: 8px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+} 

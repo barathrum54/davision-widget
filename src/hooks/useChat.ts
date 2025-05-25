@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type { Message, ChatState } from '../types/chat.types';
 import type { WidgetConfig } from '../types/config.types';
 import { generateId } from '../utils/helpers';
@@ -14,7 +14,10 @@ export const useChat = (config: WidgetConfig = {}) => {
     isOpen: false,
     isLoading: false,
     error: null,
+    isOffline: false,
   });
+
+  const checkIntervalRef = useRef<number | null>(null);
 
   const chatService = new ChatService({
     apiEndpoint: config.apiEndpoint,
@@ -22,6 +25,39 @@ export const useChat = (config: WidgetConfig = {}) => {
     headers: config.headers,
     analyticsEndpoint: config.analyticsEndpoint,
   });
+
+  const checkNetworkConnectivity = useCallback(() => {
+    const isOnline = navigator.onLine;
+    
+    setState(prev => {
+      if (prev.isOffline !== !isOnline) {
+        return { ...prev, isOffline: !isOnline };
+      }
+      return prev;
+    });
+  }, []);
+
+  useEffect(() => {
+    // Initial check
+    checkNetworkConnectivity();
+    
+    // Set up event listeners for online/offline events
+    window.addEventListener('online', checkNetworkConnectivity);
+    window.addEventListener('offline', checkNetworkConnectivity);
+    
+    // Set up interval to check connectivity every second
+    checkIntervalRef.current = window.setInterval(checkNetworkConnectivity, 1000);
+    
+    return () => {
+      window.removeEventListener('online', checkNetworkConnectivity);
+      window.removeEventListener('offline', checkNetworkConnectivity);
+      
+      if (checkIntervalRef.current) {
+        clearInterval(checkIntervalRef.current);
+        checkIntervalRef.current = null;
+      }
+    };
+  }, [checkNetworkConnectivity]);
 
   useEffect(() => {
     if (persistMessages) {
@@ -57,6 +93,15 @@ export const useChat = (config: WidgetConfig = {}) => {
 
   const sendMessage = useCallback(async (text: string): Promise<void> => {
     if (!text.trim()) return;
+    
+    // Don't send if offline
+    if (state.isOffline) {
+      setState(prev => ({
+        ...prev,
+        error: "You're offline. Please check your internet connection and try again."
+      }));
+      return;
+    }
     
     const userMessage: Message = {
       id: generateId(),
@@ -125,7 +170,7 @@ export const useChat = (config: WidgetConfig = {}) => {
         };
       });
     }
-  }, [chatService]);
+  }, [chatService, state.isOffline]);
 
   const toggleChat = useCallback(() => {
     setState(prev => ({ ...prev, isOpen: !prev.isOpen }));

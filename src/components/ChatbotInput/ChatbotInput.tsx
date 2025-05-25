@@ -17,6 +17,7 @@ interface ChatbotInputProps {
   isLoading?: boolean;
   onFocus?: () => void;
   onBlur?: () => void;
+  disabled?: boolean;
 }
 
 const ChatbotInput: React.FC<ChatbotInputProps> = ({
@@ -27,6 +28,7 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
   isLoading = false,
   onFocus,
   onBlur,
+  disabled = false,
 }) => {
   const [message, setMessage] = useState('');
   const [isListening, setIsListening] = useState(false);
@@ -173,7 +175,7 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
           aria-label="Message input"
-          disabled={isLoading}
+          disabled={isLoading || disabled}
         />
         {maxLength && message.length > 0 && (
           <div className={styles.charCount}>
@@ -183,7 +185,7 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
         <button
           className={styles.sendButton}
           onClick={handleSend}
-          disabled={!message.trim() || isLoading}
+          disabled={!message.trim() || isLoading || disabled}
           aria-label="Send message"
         >
           <img src={SEND_ICON} alt="Send" width="20" height="20" />

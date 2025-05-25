@@ -12,6 +12,7 @@ import './components/QuickReplies/QuickReplies.module.css';
 import './components/ChatbotWidget/ChatbotWidget.module.css';
 import './components/ChatbotButton/ChatbotButton.module.css';
 import iframeStyles from './components/ChatbotWidget/ChatbotIframe.module.css';
+import './components/OfflineOverlay/OfflineOverlay.module.css';
 
 declare global {
   interface Window {
@@ -202,6 +203,27 @@ const init = (config?: Partial<WidgetConfig>) => {
                 border-radius: 0 !important;
                 box-shadow: none !important;
               }
+            }
+            
+            /* Offline overlay styles */
+            .OfflineOverlay__overlay___KHlxL {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(0, 0, 0, 0.5);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              z-index: 9999;
+            }
+            
+            .OfflineOverlay__content___KHlxL {
+              background-color: white;
+              padding: 20px;
+              border-radius: 8px;
+              text-align: center;
             }
           </style>
         </head>
