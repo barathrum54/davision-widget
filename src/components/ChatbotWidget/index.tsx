@@ -51,16 +51,25 @@ const ChatbotWidget: React.FC = () => {
             ))}
           </div>
           <div className="chatbot-input-area">
-            <input
-              type="text"
-              value={input}
-              className="chatbot-input"
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Mesaj yaz..."
-            />
-            <button className="chatbot-send-button" onClick={handleSend}>
-              Gönder
+            <div className="chatbot-input-wrapper">
+              <input
+                type="text"
+                value={input}
+                className="chatbot-input"
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask me anything..."
+              />
+              <button className="chatbot-send-button" onClick={handleSend}>
+                <img src="/public/send.png" alt="" />
+              </button>
+            </div>
+            <button className="chatbot-input-area-mic-button">
+              <img src="/public/microphone.png" alt="" />
             </button>
+          </div>
+          <div className="chatbot-footer-area">
+            Powered By
+            <img src="/public/davision-logo.svg" alt="" />
           </div>
         </div>
       )}
