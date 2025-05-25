@@ -166,3 +166,37 @@ src/
 ## License
 
 MIT License
+
+## Single-File Implementation
+
+This chatbot widget is implemented as a single, self-contained JavaScript file with everything bundled together:
+
+- JavaScript code
+- CSS styles
+- Base64-encoded images
+- Auto-initialization logic
+
+### How to Use
+
+To add this widget to any website, simply include the script tag:
+
+```html
+<script src="chatbot-widget.umd.cjs"></script>
+```
+
+That's it! The widget automatically initializes without any additional steps.
+
+### Key Features
+
+- **Plug-and-Play**: No manual initialization required
+- **Self-Contained**: No external dependencies or separate CSS files
+- **Secure**: Uses iframe for isolation
+- **Responsive**: Works on all device sizes
+- **Lightweight**: Single file, optimized for production
+
+### Directory Structure
+
+The production build is available in the `dist-clean` directory:
+
+- `chatbot-widget.umd.cjs` - The single file containing everything
+- `test.html` - A test page to verify the widget works correctly

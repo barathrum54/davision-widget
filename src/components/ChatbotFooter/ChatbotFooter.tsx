@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './ChatbotFooter.module.css';
+import { COMPANY_LOGO } from '../../assets/base64Images';
 
 interface ChatbotFooterProps {
   logoSrc?: string;
@@ -7,7 +8,7 @@ interface ChatbotFooterProps {
 }
 
 const ChatbotFooter: React.FC<ChatbotFooterProps> = ({
-  logoSrc = '/davision-logo.svg',
+  logoSrc = COMPANY_LOGO,
   companyName = 'Davision',
 }) => {
   return (

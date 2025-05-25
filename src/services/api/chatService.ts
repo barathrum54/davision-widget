@@ -1,6 +1,7 @@
 import type { Message, Product } from '../../types/chat.types';
 import { analyticsService } from '../analytics/analyticsService';
 import { apiService } from './apiService';
+import { COMPANY_LOGO } from '../../assets/base64Images';
 
 interface ApiResponse {
   response_type: 0 | 1;
@@ -160,21 +161,21 @@ export class ChatService {
         id: '1',
         title: 'Printed Top With Zipper Front',
         price: '46,250.00 ₺',
-        image: '/davision-logo.svg',
+        image: COMPANY_LOGO,
         link: '#product1',
       },
       {
         id: '2',
         title: 'Halter Neck Ruffled Maxi Dress',
         price: '98,050.00 TL',
-        image: '/davision-logo.svg',
+        image: COMPANY_LOGO,
         link: '#product2',
       },
       {
         id: '3',
         title: 'Elegant Evening Gown',
         price: '125,750.00 TL',
-        image: '/davision-logo.svg',
+        image: COMPANY_LOGO,
         link: '#product3',
       },
     ];

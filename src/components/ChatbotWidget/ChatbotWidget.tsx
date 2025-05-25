@@ -14,6 +14,7 @@ import QuickReplies from '../QuickReplies/QuickReplies';
 
 // Import styles from ChatbotMessages to access the class name
 import messagesStyles from '../ChatbotMessages/ChatbotMessages.module.css';
+import { CHAT_BUTTON_ICON, COMPANY_LOGO } from '../../assets/base64Images';
 
 interface ChatbotWidgetProps {
   config?: Partial<WidgetConfig>;
@@ -113,7 +114,7 @@ const ChatbotWidgetInner: React.FC = () => {
       <ChatbotHeader 
         title="Nova" 
         subtitle=""
-        avatarSrc='/public/fab-icon.png'
+        avatarSrc={CHAT_BUTTON_ICON}
         onClose={toggleChat}
       />
       
@@ -141,7 +142,7 @@ const ChatbotWidgetInner: React.FC = () => {
         onBlur={handleInputBlur}
       />
       
-      <ChatbotFooter companyName="Davision" />
+      <ChatbotFooter logoSrc={COMPANY_LOGO} companyName="Davision" />
     </div>
   );
 };

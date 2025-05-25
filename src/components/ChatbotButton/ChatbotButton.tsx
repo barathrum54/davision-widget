@@ -1,4 +1,6 @@
 import React from 'react';
+import styles from './ChatbotButton.module.css';
+import { CHAT_BUTTON_ICON } from '../../assets/base64Images';
 
 interface ChatbotButtonProps {
   onClick: () => void;
@@ -8,52 +10,34 @@ interface ChatbotButtonProps {
 
 const ChatbotButton: React.FC<ChatbotButtonProps> = ({ 
   onClick, 
-  color = '#007bff',
+  color = '#0084FF',
   size = 60 
 }) => {
+  // Combine inline styles with CSS modules
   const buttonStyle = {
-    borderRadius: '50%',
-    cursor: 'pointer',
-    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    border: 'none',
-    padding: 0,
-    color: 'white',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
     backgroundColor: color,
     width: `${size}px`,
     height: `${size}px`,
-  };
-
-  const iconStyle = {
+    position: 'fixed',
+    bottom: '20px',
+    right: '20px',
+    zIndex: '1000',
+    borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
-    height: '100%',
-  };
-
-  const imageStyle = {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover' as const,
-    borderRadius: '50%',
+    
   };
 
   return (
     <button 
+      className={styles.button}
       style={buttonStyle}
       onClick={onClick}
       aria-label="Open chat"
     >
-      <div style={iconStyle}>
-        <img 
-          src="/fab-icon.png" 
-          alt="Chat" 
-          style={imageStyle}
-        />
+      <div className={styles.buttonIcon}>
+        <img src={CHAT_BUTTON_ICON} alt="" />
       </div>
     </button>
   );

@@ -5,6 +5,7 @@ import QuickReplies from "../QuickReplies/QuickReplies";
 import ProductCarousel from "../ProductCarousel/ProductCarousel";
 import { analyticsService } from "../../services/analytics/analyticsService";
 import type { Message } from "../../types/chat.types";
+import { CARET_DOWN_ICON, CHAT_BUTTON_ICON, MICROPHONE_ICON, SEND_ICON } from "../../assets/base64Images";
 
 interface ChatbotWidgetProps {
   apiEndpoint?: string;
@@ -110,7 +111,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
         <button className="chatbot-button" onClick={toggleChat}>
           <img
             className="chatbot-button-image"
-            src="/fab-icon.png"
+            src={CHAT_BUTTON_ICON}
             alt="Chat icon"
           />
         </button>
@@ -120,7 +121,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
             <div className="chatbot-header-left">
               <img
                 className="chatbot-header-avatar"
-                src="/fab-icon.png"
+                src={CHAT_BUTTON_ICON}
                 alt="Avatar"
               />
               <span className="chatbot-header-title">Nova</span>
@@ -128,7 +129,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
             <button className="chatbot-close-button" onClick={toggleChat}>
               <img
                 className="chatbot-close-button-caret"
-                src="/caret-down.png"
+                src={CARET_DOWN_ICON}
                 alt="Close"
               />
             </button>
@@ -161,7 +162,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
                 onClick={handleSend}
                 disabled={isLoading || !input.trim()}
               >
-                <img src="/send.png" alt="Send" />
+                <img src={SEND_ICON} alt="Send" />
               </button>
             </div>
             <button
@@ -169,7 +170,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
               onClick={handleMicClick}
               disabled={isLoading}
             >
-              <img src="/microphone.png" alt="Microphone" />
+              <img src={MICROPHONE_ICON} alt="Microphone" />
             </button>
           </div>
           

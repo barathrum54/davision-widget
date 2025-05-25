@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './ChatbotHeader.module.css';
+import { CARET_DOWN_ICON } from '../../assets/base64Images';
 
 interface ChatbotHeaderProps {
   title: string;
@@ -38,7 +39,7 @@ const ChatbotHeader: React.FC<ChatbotHeaderProps> = ({
         onClick={onClose}
         aria-label="Close chat"
       >
-       <img src="/public/caret-down.png" alt="" />
+        <img src={CARET_DOWN_ICON} alt="Close" />
       </button>
     </div>
   );
