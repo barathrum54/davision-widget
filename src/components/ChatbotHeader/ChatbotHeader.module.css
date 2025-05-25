@@ -67,8 +67,8 @@
   transition: background-color 0.2s ease;
 }
 .closeButton img {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
 }
 
