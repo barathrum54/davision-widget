@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
@@ -8,24 +9,31 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: "src/main.tsx",
-      name: "Chatbot",
-      fileName: "widget", // Base name for output
-      formats: ["umd"], // Browser-compatible UMD format
+      entry: resolve(__dirname, 'src/main.tsx'),
+      name: 'ChatbotWidget',
+      fileName: 'chatbot-widget',
+      formats: ['umd'],
     },
     rollupOptions: {
-      external: ["react", "react-dom"], // Externalize React and ReactDOM
+      external: [],
       output: {
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-        },
-        entryFileNames: "widget.js", // Explicitly set output filename
+        globals: {},
       },
     },
     outDir: "dist",
     emptyOutDir: true, // Clear dist folder on build
-    minify: "esbuild", // Minify for smaller bundle
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
     sourcemap: false, // Disable sourcemaps for production
+  },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
   },
 });

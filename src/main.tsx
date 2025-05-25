@@ -1,44 +1,66 @@
-import { createRoot } from "react-dom/client";
-import ChatbotWidget from "./components/ChatbotWidget";
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import ChatbotWidget from './components/ChatbotWidget';
+import { WidgetConfig } from './types';
 
-function init() {
-  // Ensure React and ReactDOM are available
-  if (!window.React) {
-    console.error("React not found. Please include React via CDN.");
-    return;
+declare global {
+  interface Window {
+    ChatbotWidget: {
+      init: (config?: WidgetConfig) => void;
+      destroy: () => void;
+    };
   }
-  if (!window.ReactDOM) {
-    console.error("ReactDOM not found. Please include ReactDOM via CDN.");
-    return;
-  }
+}
 
+let widgetRoot: ReturnType<typeof createRoot> | null = null;
+
+const init = (config?: WidgetConfig) => {
   try {
-    // Create Shadow DOM
-    const host = document.createElement("div");
-    host.id = "chatbot-widget";
-    document.body.appendChild(host);
-    const shadow = host.attachShadow({ mode: "open" });
+    // Create container
+    const container = document.createElement('div');
+    container.id = 'chatbot-widget-root';
+    document.body.appendChild(container);
 
-    // Render React app in Shadow DOM
-    const rootElement = document.createElement("div");
-    shadow.appendChild(rootElement);
-    const root = createRoot(rootElement);
-    root.render(<ChatbotWidget />);
+    // Create shadow DOM for style isolation
+    const shadowRoot = container.attachShadow({ mode: 'open' });
+    
+    // Create root element inside shadow DOM
+    const rootElement = document.createElement('div');
+    shadowRoot.appendChild(rootElement);
+
+    // Render widget
+    widgetRoot = createRoot(rootElement);
+    widgetRoot.render(<ChatbotWidget config={config} />);
   } catch (error) {
-    console.error("Failed to initialize ChatbotWidget:", error);
+    console.error('Failed to initialize ChatbotWidget:', error);
   }
-}
+};
 
-// Attach to global window object
-try {
-  if (!window.Chatbot) {
-    window.Chatbot = { init };
-  } else {
-    console.warn("window.Chatbot already exists. Overwriting.");
-    window.Chatbot = { init };
+const destroy = () => {
+  try {
+    if (widgetRoot) {
+      widgetRoot.unmount();
+      widgetRoot = null;
+    }
+    
+    const container = document.getElementById('chatbot-widget-root');
+    if (container) {
+      container.remove();
+    }
+  } catch (error) {
+    console.error('Failed to destroy ChatbotWidget:', error);
   }
-} catch (error) {
-  console.error("Failed to set window.Chatbot:", error);
-}
+};
 
-export default init;
+// Expose to window
+window.ChatbotWidget = { init, destroy };
+
+// Auto-init if data attribute is present
+document.addEventListener('DOMContentLoaded', () => {
+  const script = document.currentScript;
+  if (script?.hasAttribute('data-auto-init')) {
+    const configStr = script.getAttribute('data-config');
+    const config = configStr ? JSON.parse(configStr) : undefined;
+    init(config);
+  }
+});

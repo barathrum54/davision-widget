@@ -15,7 +15,7 @@ const ChatbotWidget: React.FC = () => {
     if (newIsOpen && messages.length === 0) {
       setTimeout(() => {
         setMessages([
-          { text: "Hello! How can I assist you today?", isClient: false },
+          { text: "Hello! How can I assist you today?2", isClient: false },
         ]);
       }, 1000);
     }
