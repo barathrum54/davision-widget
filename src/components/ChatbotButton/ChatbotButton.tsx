@@ -18,7 +18,7 @@ const ChatbotButton: React.FC<ChatbotButtonProps> = ({
     backgroundColor: color,
     width: `${size}px`,
     height: `${size}px`,
-    position: 'fixed',
+    position: 'fixed' as 'fixed',
     bottom: '20px',
     right: '20px',
     zIndex: '1000',
@@ -26,7 +26,6 @@ const ChatbotButton: React.FC<ChatbotButtonProps> = ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    
   };
 
   return (

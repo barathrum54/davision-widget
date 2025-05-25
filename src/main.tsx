@@ -11,6 +11,7 @@ import './components/ChatbotMessages/ChatbotMessages.module.css';
 import './components/QuickReplies/QuickReplies.module.css';
 import './components/ChatbotWidget/ChatbotWidget.module.css';
 import './components/ChatbotButton/ChatbotButton.module.css';
+import iframeStyles from './components/ChatbotWidget/ChatbotIframe.module.css';
 
 declare global {
   interface Window {
@@ -25,6 +26,7 @@ declare global {
 let widgetRoot: ReturnType<typeof createRoot> | null = null;
 let widgetContainer: HTMLElement | null = null;
 let widgetIframe: HTMLIFrameElement | null = null;
+let widgetWrapper: HTMLElement | null = null;
 
 /**
  * Initialize the chatbot widget
@@ -34,22 +36,52 @@ const init = (config?: Partial<WidgetConfig>) => {
     // Clean up any existing instance
     destroy();
     
-    // Create a static iframe directly in the DOM
+    // Create a wrapper element that we can style
+    const wrapper = document.createElement('div');
+    wrapper.id = 'chatbot-widget-wrapper';
+    wrapper.style.position = 'fixed';
+    wrapper.style.bottom = '0';
+    wrapper.style.right = '0';
+    wrapper.style.width = '100vw';
+    wrapper.style.height = '100vh';
+    wrapper.style.zIndex = '9999';
+    wrapper.style.overflow = 'hidden';
+    wrapper.style.border = 'none';
+    wrapper.style.backgroundColor = 'transparent';
+    
+    // Add media query for responsiveness
+    const style = document.createElement('style');
+    style.textContent = `
+      @media (max-width: 480px) {
+        #chatbot-widget-wrapper {
+          width: 100% !important;
+          height: 100vh !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Create iframe inside the wrapper
     const iframe = document.createElement('iframe');
     iframe.id = 'chatbot-widget-iframe';
     iframe.setAttribute('chatbot-widget-iframe', '');
-    iframe.style.border = 'none';
-    iframe.style.position = 'fixed';
-    iframe.style.bottom = '0';
-    iframe.style.right = '0';
-    iframe.style.width = '360px';
-    iframe.style.height = '600px';
-    iframe.style.backgroundColor = 'transparent';
-    iframe.style.zIndex = '9999';
-    iframe.style.overflow = 'hidden';
     
-    // Append iframe to body
-    document.body.appendChild(iframe);
+    // Reset iframe default styles
+    iframe.style.border = 'none';
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.overflow = 'hidden';
+    iframe.style.backgroundColor = 'transparent';
+    
+    // Append elements to DOM
+    wrapper.appendChild(iframe);
+    document.body.appendChild(wrapper);
+    
+    widgetWrapper = wrapper;
     widgetIframe = iframe;
     
     // Access the CSS content that was bundled with the JS
@@ -93,8 +125,8 @@ const init = (config?: Partial<WidgetConfig>) => {
               transition: transform 0.3s ease, box-shadow 0.3s ease;
               animation: pulse 2s infinite;
               position: fixed;
-              bottom: 20px !important;
-              right: 20px !important;
+              bottom: 20px;
+              right: 20px;
             }
             
             .ChatbotButton__buttonIcon___KHlxL {
@@ -103,6 +135,11 @@ const init = (config?: Partial<WidgetConfig>) => {
               justify-content: center;
               width: 100%;
               height: 100%;
+            }
+            
+            .ChatbotButton__buttonIcon___KHlxL img {
+              width: 30px;
+              height: 30px;
             }
             
             /* Quick replies styles */
@@ -149,6 +186,23 @@ const init = (config?: Partial<WidgetConfig>) => {
                 transform: scale(1);
               }
             }
+            
+            /* Responsive styles for iframe content */
+            @media (max-width: 480px) {
+              .ChatbotWidget_widget__KHlxL {
+                bottom: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+              }
+              
+              .ChatbotWidget_container__KHlxL {
+                width: 100% !important;
+                height: 100% !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+              }
+            }
           </style>
         </head>
         <body>
@@ -192,8 +246,12 @@ const destroy = () => {
     }
     
     if (widgetIframe) {
-      widgetIframe.remove();
       widgetIframe = null;
+    }
+    
+    if (widgetWrapper) {
+      widgetWrapper.remove();
+      widgetWrapper = null;
     }
   } catch (error) {
     console.error('Failed to destroy ChatbotWidget:', error);
