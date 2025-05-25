@@ -35,7 +35,7 @@ const ChatbotWidgetInner: React.FC = () => {
     <div className={styles.container}>
       <ChatbotHeader 
         title="Nova" 
-        subtitle="How can I help you today?"
+        subtitle=""
         onClose={toggleChat}
       />
       

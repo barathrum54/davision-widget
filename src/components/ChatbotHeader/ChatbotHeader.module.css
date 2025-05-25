@@ -63,7 +63,11 @@
   border-radius: 50%;
   transition: background-color 0.2s ease;
 }
-
+.closeButton img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
 .closeButton:hover {
   background-color: rgba(115, 90, 60, 0.1);
 }

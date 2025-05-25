@@ -11,82 +11,81 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  const [animating, setAnimating] = useState(false);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const rowRef = useRef<HTMLDivElement>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const productsContainerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const handlePrevious = () => {
-    if (animating) return;
-    
-    setAnimating(true);
-    
-    // Apply sliding animation
-    if (rowRef.current) {
-      rowRef.current.style.transform = 'translateX(100%)';
-      rowRef.current.style.transition = 'transform 0.3s ease';
-      
-      setTimeout(() => {
-        setCurrentIndex((prevIndex) => 
-          prevIndex === 0 ? products.length - 1 : prevIndex - 1
-        );
-        
-        // Reset transform immediately after changing index
-        if (rowRef.current) {
-          rowRef.current.style.transition = 'none';
-          rowRef.current.style.transform = 'translateX(-100%)';
-          
-          // Then slide back to normal position with animation
-          setTimeout(() => {
-            if (rowRef.current) {
-              rowRef.current.style.transition = 'transform 0.3s ease';
-              rowRef.current.style.transform = 'translateX(0)';
-              
-              // Animation complete
-              setTimeout(() => {
-                setAnimating(false);
-              }, 300);
-            }
-          }, 50);
-        }
-      }, 300);
-    }
+  // Get all products to display, with duplicates for infinite scroll
+  const allProducts = [...products, ...products, ...products];
+
+  // Get viewable products (current item and next item)
+  const getVisibleProducts = () => {
+    const startIdx = currentIndex;
+    return allProducts.slice(startIdx, startIdx + 2);
   };
 
+  // Simple sliding - just update the index
   const handleNext = () => {
-    if (animating) return;
+    if (isAnimating) return;
+    setIsAnimating(true);
     
-    setAnimating(true);
+    // Always move one position forward
+    const nextIndex = currentIndex + 1;
     
-    // Apply sliding animation
-    if (rowRef.current) {
-      rowRef.current.style.transform = 'translateX(-100%)';
-      rowRef.current.style.transition = 'transform 0.3s ease';
-      
+    // If we reach the end of one "round", we'll eventually need to reset
+    // But we do that after sliding safely through the duplicated items
+    if (nextIndex >= products.length * 2) {
+      // Schedule a reset to the first round after animation completes
       setTimeout(() => {
-        setCurrentIndex((prevIndex) => 
-          prevIndex === products.length - 1 ? 0 : prevIndex + 1
-        );
-        
-        // Reset transform immediately after changing index
-        if (rowRef.current) {
-          rowRef.current.style.transition = 'none';
-          rowRef.current.style.transform = 'translateX(100%)';
+        if (productsContainerRef.current) {
+          productsContainerRef.current.style.transition = 'none';
+          setCurrentIndex(nextIndex % products.length);
           
-          // Then slide back to normal position with animation
-          setTimeout(() => {
-            if (rowRef.current) {
-              rowRef.current.style.transition = 'transform 0.3s ease';
-              rowRef.current.style.transform = 'translateX(0)';
-              
-              // Animation complete
-              setTimeout(() => {
-                setAnimating(false);
-              }, 300);
-            }
-          }, 50);
+          // Force reflow
+          void productsContainerRef.current.offsetHeight;
+          
+          // Restore transition
+          productsContainerRef.current.style.transition = '';
         }
       }, 300);
     }
+    
+    setCurrentIndex(nextIndex);
+    
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 300);
+  };
+
+  const handlePrevious = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    
+    // Always move one position backward
+    const prevIndex = currentIndex - 1;
+    
+    // If we go before the first item of the first round, we need to reset
+    if (prevIndex < 0) {
+      // Schedule a reset to the last round after animation completes
+      setTimeout(() => {
+        if (productsContainerRef.current) {
+          productsContainerRef.current.style.transition = 'none';
+          setCurrentIndex(products.length + prevIndex);
+          
+          // Force reflow
+          void productsContainerRef.current.offsetHeight;
+          
+          // Restore transition
+          productsContainerRef.current.style.transition = '';
+        }
+      }, 300);
+    }
+    
+    setCurrentIndex(prevIndex);
+    
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 300);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -98,7 +97,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   };
 
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd || animating) return;
+    if (!touchStart || !touchEnd || isAnimating) return;
     
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 50;
@@ -130,25 +129,17 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   // Track when products are shown
   useEffect(() => {
     if (products && products.length > 0) {
+      const actualIndex = currentIndex % products.length;
       analyticsService.trackEvent({
         eventType: 'view_product',
         eventData: { 
-          productId: products[currentIndex].id,
-          productTitle: products[currentIndex].title,
+          productId: products[actualIndex].id,
+          productTitle: products[actualIndex].title,
           viewType: 'carousel'
         }
       });
     }
   }, [currentIndex, products]);
-
-  if (!products || products.length === 0) {
-    return null;
-  }
-
-  // Only show two products at a time in the carousel
-  const displayProducts = products.length > 1 
-    ? [products[currentIndex], products[(currentIndex + 1) % products.length]]
-    : [products[currentIndex]];
 
   // Truncate product titles to ensure consistent height
   const truncateTitle = (title: string, maxLength = 40) => {
@@ -157,44 +148,60 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
       : title;
   };
 
+  if (!products || products.length === 0) {
+    return null;
+  }
+
+  const visibleProducts = getVisibleProducts();
+  
   return (
-    <div className={styles.carousel} ref={carouselRef}>
+    <div className={styles.carousel} ref={containerRef}>
       <div 
         className={styles.carouselInner}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div className={styles.productRow} ref={rowRef}>
-          {displayProducts.map((product) => (
-            <div
-              key={product.id}
-              className={styles.productCard}
-              onClick={() => handleProductClick(product)}
-            >
-              {product.image && (
-                <div className={styles.productImageContainer}>
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className={styles.productImage}
-                  />
+        <div className={styles.productRow}>
+          <div 
+            className={styles.productsContainer} 
+            ref={productsContainerRef}
+            style={{ 
+              transform: `translateX(-${currentIndex * 50}%)`,
+              transition: isAnimating ? 'transform 0.3s ease' : ''
+            }}
+          >
+            {allProducts.map((product, index) => (
+              <div
+                key={`${product.id}-${index}`}
+                className={styles.productCard}
+                onClick={() => handleProductClick(product)}
+              >
+                {product.image && (
+                  <div className={styles.productImageContainer}>
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className={styles.productImage}
+                    />
+                  </div>
+                )}
+                <div className={styles.productInfo}>
+                  <h3 className={styles.productTitle}>
+                    {truncateTitle(product.title)}
+                  </h3>
+                  <p className={styles.productPrice}>{product.price}</p>
                 </div>
-              )}
-              <div className={styles.productInfo}>
-                <h3 className={styles.productTitle}>
-                  {truncateTitle(product.title)}
-                </h3>
-                <p className={styles.productPrice}>{product.price}</p>
               </div>
-            </div>
-          ))}
-          {products.length > 2 && (
+            ))}
+          </div>
+          
+          {products.length > 1 && (
             <button 
               className={styles.nextButton}
               onClick={handleNext}
               aria-label="Next product"
-              disabled={animating}
+              disabled={isAnimating}
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

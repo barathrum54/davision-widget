@@ -1,7 +1,7 @@
 .carousel {
   width: 100%;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   border-radius: 0;
   margin: 0;
   background-color: #ffffff;
@@ -10,29 +10,34 @@
 
 .carouselInner {
   width: 100%;
-  transition: transform 0.3s ease;
-  touch-action: pan-x;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .productRow {
   display: flex;
   position: relative;
   width: 100%;
-  padding: 12px 0 12px 12px;
-  overflow: visible;
+  overflow: hidden;
+}
+
+.productsContainer {
+  display: flex;
+  width: 100%;
+  position: relative;
+  will-change: transform;
+  gap: 10px;
 }
 
 .productCard {
-  width: calc(50% - 6px);
+  width: 50%;
+  min-width: 50%;
+  max-width: 50%;
   padding: 0;
-  margin-right: 12px;
   border-radius: 6px;
   background-color: white;
   cursor: pointer;
   transition: transform 0.2s ease;
   flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -48,13 +53,13 @@
 
 .productImageContainer {
   width: 100%;
-  height: 160px;
+  height: 300px;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
   background-color: #ffffff;
   margin-bottom: 0;
 }
@@ -97,7 +102,7 @@
 
 .nextButton {
   position: absolute;
-  right: 10%;
+  right: 5%;
   top: 50%;
   transform: translateY(-50%);
   width: 32px;
@@ -119,26 +124,7 @@
   cursor: default;
 }
 
-.carouselDots {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 0;
-}
 
-.carouselDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #ddd;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
-
-.activeDot {
-  background-color: #666;
-}
 
 .carouselFooter {
   padding: 10px 12px;
