@@ -47,7 +47,7 @@ const ChatbotMessageItem: React.FC<ChatbotMessageItemProps> = ({ message, onRetr
               </svg>
             </button>
           )}
-          <div className={styles.messageTime}>{formatTimestamp(timestamp)}</div>
+          {/* <div className={styles.messageTime}>{formatTimestamp(timestamp)}</div> */}
         </div>
       )}
       

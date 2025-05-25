@@ -24,6 +24,16 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
     return allProducts.slice(startIdx, startIdx + 2);
   };
 
+  // Update carousel transform after index change
+  useEffect(() => {
+    if (!productsContainerRef.current) return;
+    
+    // Update the transform position based on the current index
+    const slideWidth = 50; // Width as percentage
+    const position = currentIndex * slideWidth;
+    productsContainerRef.current.style.transform = `translateX(-${position}%)`;
+  }, [currentIndex]);
+
   // Simple sliding - just update the index
   const handleNext = () => {
     if (isAnimating) return;
@@ -167,7 +177,6 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
             className={styles.productsContainer} 
             ref={productsContainerRef}
             style={{ 
-              transform: `translateX(-${currentIndex * 50}%)`,
               transition: isAnimating ? 'transform 0.3s ease' : ''
             }}
           >

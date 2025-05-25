@@ -36,6 +36,7 @@ const ChatbotWidgetInner: React.FC = () => {
       <ChatbotHeader 
         title="Nova" 
         subtitle=""
+        avatarSrc='/public/fab-icon.png'
         onClose={toggleChat}
       />
       
