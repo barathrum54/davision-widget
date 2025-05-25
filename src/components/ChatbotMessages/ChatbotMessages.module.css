@@ -5,6 +5,37 @@
   padding: 16px;
   display: flex;
   flex-direction: column;
+  /* iOS-like scrolling behavior */
+  -webkit-overflow-scrolling: touch;
+  /* Hide default scrollbar for Firefox */
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+  /* Hide default scrollbar for IE/Edge */
+  -ms-overflow-style: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera completely */
+.messagesContainer::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+
+/* Remove all the unnecessary scrollbar styling */
+.messagesContainer::-webkit-scrollbar-track {
+  display: none;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb:hover {
+  display: none;
+}
+
+/* Class to be added when scrolling - no longer needed */
+.messagesContainer.scrolling::-webkit-scrollbar-thumb {
+  display: none;
 }
 
 .messages {
