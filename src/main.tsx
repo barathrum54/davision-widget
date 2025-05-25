@@ -2,6 +2,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import ChatbotWidget from './components/ChatbotWidget/ChatbotWidget';
 import type { WidgetConfig } from './types/config.types';
+// Import CSS as text
+import chatbotStyles from './components/ChatbotWidget/style.css';
 
 declare global {
   interface Window {
@@ -35,7 +37,7 @@ const init = (config?: Partial<WidgetConfig>) => {
     const rootElement = document.createElement('div');
     shadow.appendChild(rootElement);
     
-    // Create style element to inject critical CSS
+    // Create style element to inject all CSS
     const style = document.createElement('style');
     style.textContent = `
       * {
@@ -48,6 +50,9 @@ const init = (config?: Partial<WidgetConfig>) => {
         --chatbot-z-index: 9999;
         --chatbot-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       }
+      
+      /* Inject component styles */
+      ${chatbotStyles}
     `;
     shadow.appendChild(style);
     

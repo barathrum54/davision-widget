@@ -4,86 +4,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chatbot Widget Test</title>
+  <title>Davision Chatbot Demo</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      line-height: 1.6;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
     }
 
-    h1 {
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-image {
+      height: 200px;
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .product-info {
+      padding: 1rem;
+    }
+
+    .product-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
       color: #333;
     }
 
-    .demo-section {
-      margin: 20px 0;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+    .product-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+      color: #007bff;
     }
 
-    pre {
-      background: #f5f5f5;
-      padding: 10px;
-      border-radius: 4px;
-      overflow-x: auto;
-    }
-
-    button {
-      background: #007bff;
+    .cta-button {
+      background-color: #007bff;
       color: white;
       border: none;
-      padding: 8px 16px;
+      padding: 0.75rem 1.5rem;
       border-radius: 4px;
       cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+      transition: background-color 0.2s;
     }
 
-    button:hover {
-      background: #0056b3;
+    .cta-button:hover {
+      background-color: #0069d9;
     }
   </style>
 </head>
 
 <body>
-  <h1>Davision Chatbot Widget Demo</h1>
-  <p>This page demonstrates how to embed the chatbot widget in a website.</p>
+  <header>
+    <h1>Davision Fashion Store</h1>
+    <p>Discover the latest trends in fashion</p>
+  </header>
 
-  <div class="demo-section">
-    <h2>Auto-initialized widget</h2>
-    <p>The widget is automatically initialized from the script tag with data-auto-init attribute.</p>
-  </div>
+  <main>
+    <h2>Featured Products</h2>
+    <p>Browse our collection of premium clothing and accessories</p>
 
-  <div class="demo-section">
-    <h2>Manual initialization</h2>
-    <p>You can also manually initialize the widget:</p>
-    <pre>window.ChatbotWidget.init({
-  title: 'Custom Title',
-  welcomeMessage: 'Hi there! How can I help you?'
-});</pre>
-    <button id="init-btn">Initialize</button>
-    <button id="destroy-btn">Destroy</button>
-  </div>
+    <div class="product-grid">
+      <!-- Product 1 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="/davision-logo.svg" alt="Product Image">
+        </div>
+        <div class="product-info">
+          <h3 class="product-title">Printed Top With Zipper Front</h3>
+          <p class="product-price">46,250.00 ₺</p>
+          <button class="cta-button">Add to Cart</button>
+        </div>
+      </div>
 
-  <!-- Load chatbot widget with auto-init -->
-  <script src="./dist/chatbot-widget.js" data-auto-init
-    data-config='{"title": "Nova", "subtitle": "AI Shopping Assistant", "welcomeMessage": "Welcome! I am Eve, how can I assist you today?"}'></script>
+      <!-- Product 2 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="/davision-logo.svg" alt="Product Image">
+        </div>
+        <div class="product-info">
+          <h3 class="product-title">Halter Neck Ruffled Maxi Dress</h3>
+          <p class="product-price">98,050.00 TL</p>
+          <button class="cta-button">Add to Cart</button>
+        </div>
+      </div>
 
-  <script>
-    // Manual initialization example
-    document.getElementById('init-btn').addEventListener('click', function () {
-      window.ChatbotWidget.init({
-        title: 'Custom Title',
-        welcomeMessage: 'Hi there! How can I help you?'
-      });
-    });
+      <!-- Product 3 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="/davision-logo.svg" alt="Product Image">
+        </div>
+        <div class="product-info">
+          <h3 class="product-title">Elegant Evening Gown</h3>
+          <p class="product-price">125,750.00 TL</p>
+          <button class="cta-button">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </main>
 
-    document.getElementById('destroy-btn').addEventListener('click', function () {
-      window.ChatbotWidget.destroy();
-    });
-  </script>
+  <!-- Chatbot Widget Script -->
+  <script src="/widget-dev.js"></script>
 </body>
 
 </html>

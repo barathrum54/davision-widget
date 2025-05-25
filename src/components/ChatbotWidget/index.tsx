@@ -1,30 +1,63 @@
 import React, { useState, useEffect } from "react";
 import "./style.css";
+import { useChat } from "../../hooks/useChat";
+import QuickReplies from "../QuickReplies/QuickReplies";
+import ProductCarousel from "../ProductCarousel/ProductCarousel";
+import { analyticsService } from "../../services/analytics/analyticsService";
+import type { Message } from "../../types/chat.types";
 
-const ChatbotWidget: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<
-    { text: string; isClient: boolean }[]
-  >([]);
+interface ChatbotWidgetProps {
+  apiEndpoint?: string;
+  apiKey?: string;
+  analyticsEndpoint?: string;
+  customConfig?: any;
+}
+
+const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
+  apiEndpoint,
+  apiKey,
+  analyticsEndpoint,
+  customConfig,
+}) => {
   const [input, setInput] = useState("");
+  
+  const {
+    messages,
+    isOpen,
+    isLoading,
+    sendMessage,
+    toggleChat,
+    clearMessages,
+    retryMessage,
+  } = useChat({
+    apiEndpoint,
+    apiKey,
+    analyticsEndpoint,
+    headers: customConfig?.headers,
+    persistMessages: true,
+    welcomeMessage: "Hello! How can I assist you today?",
+  });
 
-  // Toggle chat and send initial message after 1s when opening
-  const toggleChat = () => {
-    const newIsOpen = !isOpen;
-    setIsOpen(newIsOpen);
-    if (newIsOpen && messages.length === 0) {
-      setTimeout(() => {
-        setMessages([
-          { text: "Hello! How can I assist you today?2", isClient: false },
-        ]);
-      }, 1000);
+  // Track page view when component mounts
+  useEffect(() => {
+    analyticsService.trackEvent({
+      eventType: 'page_view',
+    });
+  }, []);
+
+  // Track chat open/close
+  useEffect(() => {
+    if (isOpen) {
+      analyticsService.trackEvent({
+        eventType: 'open_chat',
+      });
     }
-  };
+  }, [isOpen]);
 
-  // Handle sending messages (both via button and Enter key)
+  // Handle sending messages
   const handleSend = () => {
     if (input.trim()) {
-      setMessages([...messages, { text: input, isClient: true }]);
+      sendMessage(input);
       setInput("");
     }
   };
@@ -36,9 +69,39 @@ const ChatbotWidget: React.FC = () => {
     }
   };
 
+  // Handle quick reply selection
+  const handleQuickReplySelected = (text: string) => {
+    sendMessage(text);
+  };
+
   // Handle microphone button click
   const handleMicClick = () => {
-    alert("Work in progress");
+    analyticsService.trackEvent({
+      eventType: 'click_quick_reply',
+      eventData: { feature: 'voice_input' }
+    });
+    alert("Voice input feature is coming soon!");
+  };
+
+  // Render message based on type
+  const renderMessage = (message: Message) => {
+    const messageClassName = `chatbot-message ${
+      message.isUser ? "chatbot-message-client" : ""
+    }`;
+
+    return (
+      <div key={message.id} className={messageClassName}>
+        <div className="chatbot-message-content">
+          {message.text}
+        </div>
+        
+        {message.products && message.products.length > 0 && (
+          <div className="chatbot-message-carousel">
+            <ProductCarousel products={message.products} />
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -70,18 +133,18 @@ const ChatbotWidget: React.FC = () => {
               />
             </button>
           </div>
+          
           <div className="chatbot-message-area">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`chatbot-message ${
-                  msg.isClient ? "chatbot-message-client" : ""
-                }`}
-              >
-                {msg.text}
+            {messages.map((message) => renderMessage(message))}
+            {isLoading && (
+              <div className="chatbot-message">
+                <div className="chatbot-loading-indicator">
+                  <div></div><div></div><div></div>
+                </div>
               </div>
-            ))}
+            )}
           </div>
+          
           <div className="chatbot-input-area">
             <div className="chatbot-input-wrapper">
               <input
@@ -91,21 +154,30 @@ const ChatbotWidget: React.FC = () => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Ask me anything..."
+                disabled={isLoading}
               />
-              <button className="chatbot-send-button" onClick={handleSend}>
-                <img src="/public/send.png" alt="Send" />
+              <button 
+                className="chatbot-send-button" 
+                onClick={handleSend}
+                disabled={isLoading || !input.trim()}
+              >
+                <img src="/send.png" alt="Send" />
               </button>
             </div>
             <button
               className="chatbot-input-area-mic-button"
               onClick={handleMicClick}
+              disabled={isLoading}
             >
-              <img src="/public/microphone.png" alt="Microphone" />
+              <img src="/microphone.png" alt="Microphone" />
             </button>
           </div>
+          
+          <QuickReplies onReplySelected={handleQuickReplySelected} replies={customConfig?.quickReplies} />
+          
           <div className="chatbot-footer-area">
             Powered By
-            <img src="/public/davision-logo.svg" alt="Davision Logo" />
+            <img src="/davision-logo.svg" alt="Davision Logo" />
           </div>
         </div>
       )}

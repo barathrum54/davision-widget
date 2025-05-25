@@ -26,6 +26,7 @@ export interface WidgetConfig {
   apiEndpoint?: string;
   apiKey?: string;
   headers?: Record<string, string>;
+  analyticsEndpoint?: string;
   enableVoice?: boolean;
   enableFileUpload?: boolean;
   maxMessageLength?: number;

@@ -4,6 +4,7 @@ import type { WidgetConfig } from '../types/config.types';
 import { generateId } from '../utils/helpers';
 import { messageStorage } from '../services/storage/messageStorage';
 import { ChatService } from '../services/api/chatService';
+import { analyticsService } from '../services/analytics/analyticsService';
 
 export const useChat = (config: WidgetConfig = {}) => {
   const { persistMessages = true } = config;
@@ -20,6 +21,7 @@ export const useChat = (config: WidgetConfig = {}) => {
     apiEndpoint: config.apiEndpoint,
     apiKey: config.apiKey,
     headers: config.headers,
+    analyticsEndpoint: config.analyticsEndpoint,
   });
 
   // Load persisted messages on mount
@@ -115,7 +117,18 @@ export const useChat = (config: WidgetConfig = {}) => {
 
   const toggleChat = useCallback(() => {
     setState(prev => ({ ...prev, isOpen: !prev.isOpen }));
-  }, []);
+    
+    // Track chat open/close event
+    if (!state.isOpen) {
+      analyticsService.trackEvent({
+        eventType: 'open_chat',
+      });
+    } else {
+      analyticsService.trackEvent({
+        eventType: 'close_chat',
+      });
+    }
+  }, [state.isOpen]);
 
   const clearMessages = useCallback(() => {
     setState(prev => ({ ...prev, messages: [] }));

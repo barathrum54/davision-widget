@@ -4,12 +4,202 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chatbot Widget Dev</title>
+  <title>Davision Chatbot - About Us</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+
+    nav {
+      background-color: #444;
+      padding: 0.5rem 0;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav ul li {
+      margin: 0 1rem;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      transition: background-color 0.3s;
+    }
+
+    nav ul li a:hover {
+      background-color: #555;
+      border-radius: 4px;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .about-section {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .team-member {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .team-photo {
+      height: 200px;
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .team-photo img {
+      max-width: 50%;
+      max-height: 50%;
+    }
+
+    .team-info {
+      padding: 1rem;
+    }
+
+    .team-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
+      color: #333;
+    }
+
+    .team-role {
+      font-size: 1rem;
+      color: #666;
+      margin: 0.5rem 0;
+    }
+  </style>
 </head>
 
 <body>
-  <div id="root"></div>
-  <script type="module" src="/src/dev.tsx"></script>
+  <header>
+    <h1>Davision Fashion</h1>
+    <p>Quality fashion for all occasions</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="test.html">Home</a></li>
+      <li><a href="index.html">About Us</a></li>
+      <li><a href="#">Collections</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="about-section">
+      <h2>About Davision</h2>
+      <p>Founded in 2015, Davision has become a leading fashion brand known for quality craftsmanship and innovative
+        designs. Our mission is to provide stylish, comfortable clothing that empowers individuals to express their
+        unique identity.</p>
+      <p>We pride ourselves on sustainable practices, ethical manufacturing, and attention to detail in every piece we
+        create. Our designers draw inspiration from global trends while adding their unique creative touch to bring you
+        collections that are both timeless and contemporary.</p>
+    </section>
+
+    <h2>Our Team</h2>
+    <div class="team-grid">
+      <!-- Team Member 1 -->
+      <div class="team-member">
+        <div class="team-photo">
+          <img src="/davision-logo.svg" alt="Team Member">
+        </div>
+        <div class="team-info">
+          <h3 class="team-name">Sarah Johnson</h3>
+          <p class="team-role">Creative Director</p>
+        </div>
+      </div>
+
+      <!-- Team Member 2 -->
+      <div class="team-member">
+        <div class="team-photo">
+          <img src="/davision-logo.svg" alt="Team Member">
+        </div>
+        <div class="team-info">
+          <h3 class="team-name">Michael Chen</h3>
+          <p class="team-role">Head of Design</p>
+        </div>
+      </div>
+
+      <!-- Team Member 3 -->
+      <div class="team-member">
+        <div class="team-photo">
+          <img src="/davision-logo.svg" alt="Team Member">
+        </div>
+        <div class="team-info">
+          <h3 class="team-name">Elena Rodriguez</h3>
+          <p class="team-role">Production Manager</p>
+        </div>
+      </div>
+
+      <!-- Team Member 4 -->
+      <div class="team-member">
+        <div class="team-photo">
+          <img src="/davision-logo.svg" alt="Team Member">
+        </div>
+        <div class="team-info">
+          <h3 class="team-name">David Thompson</h3>
+          <p class="team-role">Marketing Director</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Chatbot Widget Script for Development -->
+  <script type="module">
+    // Import the development API
+    import DevAPI from '/src/dev.tsx';
+
+    // Initialize with About page configuration
+    DevAPI.init({
+      welcomeMessage: "Hello! Welcome to our About page. How can I help you learn more about Davision?",
+      quickReplies: [
+        { id: '1', text: 'Tell me about your history' },
+        { id: '2', text: 'What products do you have?' },
+        { id: '3', text: 'Where are your stores?' },
+        { id: '4', text: 'Are you hiring?' },
+        { id: '5', text: 'Contact customer service' }
+      ]
+    });
+  </script>
 </body>
 
 </html>

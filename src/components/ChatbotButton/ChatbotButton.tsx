@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './ChatbotButton.module.css';
 
 interface ChatbotButtonProps {
   onClick: () => void;
@@ -12,18 +11,35 @@ const ChatbotButton: React.FC<ChatbotButtonProps> = ({
   color = '#007bff',
   size = 60 
 }) => {
+  const buttonStyle = {
+    borderRadius: '50%',
+    cursor: 'pointer',
+    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: 'none',
+    padding: 0,
+    color: 'white',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    backgroundColor: color,
+    width: `${size}px`,
+    height: `${size}px`,
+  };
+
+  const iconStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
   return (
     <button 
-      className={styles.button}
+      style={buttonStyle}
       onClick={onClick}
       aria-label="Open chat"
-      style={{ 
-        backgroundColor: color,
-        width: `${size}px`,
-        height: `${size}px`
-      }}
     >
-      <div className={styles.buttonIcon}>
+      <div style={iconStyle}>
         <svg 
           viewBox="0 0 24 24" 
           fill="none" 

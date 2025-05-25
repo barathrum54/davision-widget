@@ -1,0 +1,100 @@
+.quickRepliesContainer {
+  margin-top: 16px;
+  border-top: 1px solid #e5e5e5;
+  background-color: #ffffff;
+  border-radius: 0 0 16px 16px;
+  overflow: hidden;
+}
+
+.quickRepliesHeader {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.quickRepliesHeader:hover {
+  background-color: #f0f0f0;
+}
+
+.quickRepliesHeader span {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.caretIcon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.caretIcon img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.2s;
+}
+
+.quickRepliesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.quickReplyButton {
+  padding: 10px 16px;
+  background-color: #f1f1f1;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s, transform 0.1s;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quickReplyButton:hover {
+  background-color: #e8e8e8;
+  transform: translateY(-1px);
+}
+
+.quickReplyButton:active {
+  transform: translateY(1px);
+}
+
+/* Collapsed state styles - can be toggled with JS */
+.quickRepliesContainer.collapsed .quickRepliesList {
+  display: none;
+}
+
+.quickRepliesContainer.collapsed .caretIcon img {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 480px) {
+  .quickRepliesHeader {
+    padding: 10px 12px;
+  }
+  
+  .quickRepliesHeader span {
+    font-size: 13px;
+  }
+  
+  .quickRepliesList {
+    padding: 8px 12px;
+  }
+  
+  .quickReplyButton {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+} 
