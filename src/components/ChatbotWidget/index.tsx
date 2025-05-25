@@ -35,7 +35,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
     apiKey,
     analyticsEndpoint,
     headers: customConfig?.headers,
-    persistMessages: true,
+    persistMessages: false,
     welcomeMessage: "Hello! How can I assist you today?",
   });
 

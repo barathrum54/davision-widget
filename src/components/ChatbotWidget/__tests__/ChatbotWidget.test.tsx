@@ -27,7 +27,7 @@ ChatbotWidget.init({
   enableVoice: false,
   enableFileUpload: false,
   maxMessageLength: 500,
-  persistMessages: true,
+  persistMessages: false,
   
   // API
   apiEndpoint: 'https://api.example.com/chat',

@@ -7,7 +7,7 @@ import { ChatService } from '../services/api/chatService';
 import { analyticsService } from '../services/analytics/analyticsService';
 
 export const useChat = (config: WidgetConfig = {}) => {
-  const { persistMessages = true } = config;
+  const { persistMessages = false } = config;
   
   const [state, setState] = useState<ChatState>({
     messages: [],

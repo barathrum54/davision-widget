@@ -28,7 +28,7 @@ export const defaultConfig: WidgetConfig = {
   enableVoice: false,
   enableFileUpload: false,
   maxMessageLength: 500,
-  persistMessages: true,
+  persistMessages: false,
   productCarouselEnabled: true,
   quickReplies: [],
   avatarSrc: '',
