@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { WidgetConfig } from '../../types/config.types';
 import { createConfig } from '../../config/default.config';
 import { ChatProvider, useGlobalChat } from '../../context/ChatContext';
@@ -10,7 +10,7 @@ import ChatbotHeader from '../ChatbotHeader/ChatbotHeader';
 import ChatbotMessages from '../ChatbotMessages/ChatbotMessages';
 import ChatbotInput from '../ChatbotInput/ChatbotInput';
 import ChatbotFooter from '../ChatbotFooter/ChatbotFooter';
-// QuickReplies component is imported but not currently used
+import QuickReplies from '../QuickReplies/QuickReplies';
 
 interface ChatbotWidgetProps {
   config?: Partial<WidgetConfig>;
@@ -26,10 +26,23 @@ const ChatbotWidgetInner: React.FC = () => {
     toggleChat,
     retryMessage,
   } = useGlobalChat();
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   if (!isOpen) {
     return <ChatbotButton onClick={toggleChat} />;
   }
+
+  const handleQuickReplySelected = (text: string) => {
+    sendMessage(text);
+  };
+
+  const handleInputFocus = () => {
+    setIsInputFocused(true);
+  };
+
+  const handleInputBlur = () => {
+    setIsInputFocused(false);
+  };
 
   return (
     <div className={styles.container}>
@@ -47,13 +60,25 @@ const ChatbotWidgetInner: React.FC = () => {
         onRetry={retryMessage}
       />
       
-      {/* QuickReplies component hidden for now */}
+      <QuickReplies 
+        onReplySelected={handleQuickReplySelected}
+        replies={[
+          { id: '1', text: 'New Collection' },
+          { id: '2', text: 'Dresses' },
+          { id: '3', text: 'Spring' },
+          { id: '4', text: 'Bridal' },
+          { id: '5', text: 'Resort \'24' },
+        ]}
+        isVisible={isInputFocused}
+      />
       
       <ChatbotInput 
         onSendMessage={sendMessage}
         isLoading={isLoading}
         placeholder="Mesajınızı yazın..."
         enableVoice={true}
+        onFocus={handleInputFocus}
+        onBlur={handleInputBlur}
       />
       
       <ChatbotFooter companyName="Davision" />

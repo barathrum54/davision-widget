@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './QuickReplies.module.css';
 import { analyticsService } from '../../services/analytics/analyticsService';
 
@@ -10,26 +10,22 @@ export interface QuickReply {
 interface QuickRepliesProps {
   replies: QuickReply[];
   onReplySelected: (text: string) => void;
+  isVisible?: boolean;
 }
 
 const DEFAULT_QUICK_REPLIES: QuickReply[] = [
-  { id: '1', text: 'What products do you have?' },
-  { id: '2', text: 'How can I order?' },
-  { id: '3', text: 'What is your return policy?' },
-  { id: '4', text: 'Where is my order?' },
-  { id: '5', text: 'Contact customer service' },
+  { id: '1', text: 'New Collection' },
+  { id: '2', text: 'Dresses' },
+  { id: '3', text: 'Spring' },
+  { id: '4', text: 'Bridal' },
+  { id: '5', text: 'Resort \'24' },
 ];
 
 const QuickReplies: React.FC<QuickRepliesProps> = ({ 
   replies = DEFAULT_QUICK_REPLIES,
-  onReplySelected 
+  onReplySelected,
+  isVisible = true
 }) => {
-  const [collapsed, setCollapsed] = useState(false);
-  
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
-  
   const handleReplyClick = (reply: QuickReply) => {
     // Track quick reply click
     analyticsService.trackEvent({
@@ -44,19 +40,15 @@ const QuickReplies: React.FC<QuickRepliesProps> = ({
     onReplySelected(reply.text);
   };
   
-  // Limit to 5 quick replies
-  const displayReplies = replies.slice(0, 5);
+  // First row: buttons 0, 1 (if available)
+  const firstRowButtons = replies.slice(0, 2);
+  // Second row: buttons 2, 3, 4 (if available)
+  const secondRowButtons = replies.slice(2, 5);
   
   return (
-    <div className={`${styles.quickRepliesContainer} ${collapsed ? styles.collapsed : ''}`}>
-      <div className={styles.quickRepliesHeader} onClick={toggleCollapsed}>
-        <span>Quick Questions</span>
-        <div className={styles.caretIcon}>
-          <img src="/caret-down.png" alt="Quick Questions" />
-        </div>
-      </div>
-      <div className={styles.quickRepliesList}>
-        {displayReplies.map((reply) => (
+    <div className={`${styles.quickRepliesContainer} ${isVisible ? styles.visible : ''}`}>
+      <div className={styles.quickRepliesRow}>
+        {firstRowButtons.map((reply) => (
           <button
             key={reply.id}
             className={styles.quickReplyButton}
@@ -66,6 +58,20 @@ const QuickReplies: React.FC<QuickRepliesProps> = ({
           </button>
         ))}
       </div>
+      
+      {secondRowButtons.length > 0 && (
+        <div className={styles.quickRepliesRow}>
+          {secondRowButtons.map((reply) => (
+            <button
+              key={reply.id}
+              className={styles.quickReplyButton}
+              onClick={() => handleReplyClick(reply)}
+            >
+              {reply.text}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

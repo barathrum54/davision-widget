@@ -14,6 +14,8 @@ interface ChatbotInputProps {
   maxLength?: number;
   enableVoice?: boolean;
   isLoading?: boolean;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 const ChatbotInput: React.FC<ChatbotInputProps> = ({
@@ -22,6 +24,8 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
   maxLength = 500,
   enableVoice = false,
   isLoading = false,
+  onFocus,
+  onBlur,
 }) => {
   const [message, setMessage] = useState('');
   const [isListening, setIsListening] = useState(false);
@@ -129,6 +133,18 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
     }
   };
 
+  const handleInputFocus = () => {
+    if (onFocus) {
+      onFocus();
+    }
+  };
+
+  const handleInputBlur = () => {
+    if (onBlur) {
+      onBlur();
+    }
+  };
+
   return (
     <div className={styles.inputContainer}>
       <div className={styles.inputWrapper}>
@@ -140,6 +156,8 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
           value={message}
           onChange={(e) => setMessage(e.target.value.slice(0, maxLength))}
           onKeyDown={handleKeyDown}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
           aria-label="Message input"
           disabled={isLoading}
         />
