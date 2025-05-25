@@ -13,11 +13,15 @@ const buttonStyle: React.CSSProperties = {
   color: "white",
   border: "none",
   borderRadius: "50%",
-  width: "60px",
-  height: "60px",
-  fontSize: "24px",
+  height: "85px",
+  width: "85px",
+  objectFit: "contain",
   cursor: "pointer",
   boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
+  padding: 0,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 };
 
 const chatContainerStyle: React.CSSProperties = {
@@ -101,10 +105,10 @@ const ChatbotWidget: React.FC = () => {
   };
 
   return (
-    <div style={widgetStyle}>
+    <div style={widgetStyle} className="dvw-fab">
       {!isOpen ? (
         <button style={buttonStyle} onClick={toggleChat}>
-          💬 Chat
+          <img src="/public/fab-icon.png" alt="" />
         </button>
       ) : (
         <div style={chatContainerStyle}>
