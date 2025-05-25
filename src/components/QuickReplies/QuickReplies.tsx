@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './QuickReplies.module.css';
 import { analyticsService } from '../../services/analytics/analyticsService';
 
@@ -24,6 +24,11 @@ const QuickReplies: React.FC<QuickRepliesProps> = ({
   replies = DEFAULT_QUICK_REPLIES,
   onReplySelected 
 }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
   
   const handleReplyClick = (reply: QuickReply) => {
     // Track quick reply click
@@ -39,16 +44,19 @@ const QuickReplies: React.FC<QuickRepliesProps> = ({
     onReplySelected(reply.text);
   };
   
+  // Limit to 5 quick replies
+  const displayReplies = replies.slice(0, 5);
+  
   return (
-    <div className={styles.quickRepliesContainer}>
-      <div className={styles.quickRepliesHeader}>
+    <div className={`${styles.quickRepliesContainer} ${collapsed ? styles.collapsed : ''}`}>
+      <div className={styles.quickRepliesHeader} onClick={toggleCollapsed}>
         <span>Quick Questions</span>
         <div className={styles.caretIcon}>
           <img src="/caret-down.png" alt="Quick Questions" />
         </div>
       </div>
       <div className={styles.quickRepliesList}>
-        {replies.slice(0, 5).map((reply) => (
+        {displayReplies.map((reply) => (
           <button
             key={reply.id}
             className={styles.quickReplyButton}

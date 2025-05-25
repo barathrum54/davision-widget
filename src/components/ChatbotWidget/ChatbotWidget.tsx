@@ -10,6 +10,7 @@ import ChatbotHeader from '../ChatbotHeader/ChatbotHeader';
 import ChatbotMessages from '../ChatbotMessages/ChatbotMessages';
 import ChatbotInput from '../ChatbotInput/ChatbotInput';
 import ChatbotFooter from '../ChatbotFooter/ChatbotFooter';
+import QuickReplies from '../QuickReplies/QuickReplies';
 
 interface ChatbotWidgetProps {
   config?: Partial<WidgetConfig>;
@@ -30,12 +31,17 @@ const ChatbotWidgetInner: React.FC = () => {
     return <ChatbotButton onClick={toggleChat} />;
   }
 
+  // Handler for quick reply selections
+  const handleQuickReplySelected = (text: string) => {
+    sendMessage(text);
+  };
+
   return (
     <div className={styles.container}>
       <ChatbotHeader 
         title="Nova" 
         subtitle="How can I help you today?"
-        onClose={toggleChat} 
+        onClose={toggleChat}
       />
       
       <ChatbotMessages 
@@ -43,6 +49,17 @@ const ChatbotWidgetInner: React.FC = () => {
         isLoading={isLoading}
         error={error}
         onRetry={retryMessage}
+      />
+      
+      <QuickReplies
+        replies={[
+          { id: '1', text: 'What products do you have?' },
+          { id: '2', text: 'How can I order?' },
+          { id: '3', text: 'What is your return policy?' },
+          { id: '4', text: 'Where is my order?' },
+          { id: '5', text: 'Contact customer service' }
+        ]}
+        onReplySelected={handleQuickReplySelected}
       />
       
       <ChatbotInput 

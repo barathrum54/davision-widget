@@ -1,5 +1,6 @@
 import type { Message, Product } from '../../types/chat.types';
 import { analyticsService } from '../analytics/analyticsService';
+import { apiService } from './apiService';
 
 interface ApiResponse {
   response_type: 0 | 1;
@@ -30,63 +31,60 @@ export class ChatService {
     if (config.analyticsEndpoint) {
       analyticsService.setApiEndpoint(config.analyticsEndpoint);
     }
+    
+    // Set API endpoint if provided
+    if (config.apiEndpoint) {
+      apiService.setApiUrl(config.apiEndpoint);
+    } else {
+      // Use the default Lambda URL
+      apiService.setApiUrl('https://yztksvq2kbbnkrlkroeapqneim0mvaco.lambda-url.us-west-2.on.aws/process_text');
+    }
+    
+    // Set API headers
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    
+    if (config.apiKey) {
+      headers['Authorization'] = `Bearer ${config.apiKey}`;
+    }
+    
+    if (config.headers) {
+      Object.assign(headers, config.headers);
+    }
+    
+    apiService.setHeaders(headers);
   }
 
   async sendMessage(text: string): Promise<ChatResponse> {
-    // Track message send event
-    analyticsService.trackEvent({
-      eventType: 'send_message',
-      eventData: { message: text }
-    });
-
-    // If no API endpoint is provided, return a mock response
-    if (!this.config.apiEndpoint) {
-      return this.getMockResponse(text);
-    }
-
     try {
-      const response = await fetch(this.config.apiEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` }),
-          ...this.config.headers,
-        },
-        body: JSON.stringify({
-          user_text: text,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`API responded with status: ${response.status}`);
+      // Check for special command "products"
+      if (text.trim().toLowerCase() === 'products') {
+        // Return mock product response without calling API
+        return this.getProductsResponse();
       }
-
-      const apiResponse: ApiResponse = await response.json();
       
-      // Process API response based on response_type
-      return this.processApiResponse(apiResponse, text);
+      // Use the apiService to send the message for regular messages
+      const response = await apiService.sendMessage(text);
+      
+      return {
+        response_type: response.response_type,
+        text: response.text || 'Hello',
+        products: response.products,
+      };
     } catch (error) {
       console.error('Error sending message to API:', error);
-      throw error;
+      return this.getMockResponse(text);
     }
   }
 
-  private processApiResponse(apiResponse: ApiResponse, originalText: string): ChatResponse {
-    // Handle response based on response_type
-    if (apiResponse.response_type === 1) {
-      // Response with product carousel
-      return {
-        response_type: 1,
-        text: apiResponse.text || 'Here are some products you might like:',
-        products: apiResponse.products || this.getDefaultProducts(),
-      };
-    } else {
-      // Simple text response
-      return {
-        response_type: 0,
-        text: apiResponse.text || 'Hello',
-      };
-    }
+  // Special response for "products" command
+  private getProductsResponse(): ChatResponse {
+    return {
+      response_type: 1, // Product carousel type
+      text: 'Here are some products you might be interested in:',
+      products: this.getRealProductsWithImages(),
+    };
   }
 
   // Mock response for demo purposes or when API endpoint is not provided
@@ -108,6 +106,47 @@ export class ChatService {
         }
       }, 1000);
     });
+  }
+
+  // New method with actual product images matching the shared example
+  private getRealProductsWithImages(): Product[] {
+    return [
+      {
+        id: '1',
+        title: 'Printed Top With Zipper Front And Gold Sequin',
+        price: '46,250.00 ₺',
+        image: 'https://placehold.co/400x500/white/333?text=Product+1',
+        link: '#product1',
+      },
+      {
+        id: '2',
+        title: 'Printed Top With Zipper Front And Gold Sequin',
+        price: '46,250.00 ₺',
+        image: 'https://placehold.co/400x500/green/white?text=Product+2',
+        link: '#product2',
+      },
+      {
+        id: '3',
+        title: 'Evening Gown With Embellishments',
+        price: '75,000.00 ₺',
+        image: 'https://placehold.co/400x500/navy/white?text=Product+3',
+        link: '#product3',
+      },
+      {
+        id: '4',
+        title: 'Casual Summer Dress',
+        price: '35,500.00 ₺',
+        image: 'https://placehold.co/400x500/pink/333?text=Product+4',
+        link: '#product4',
+      },
+      {
+        id: '5',
+        title: 'Elegant Cocktail Dress',
+        price: '52,750.00 ₺',
+        image: 'https://placehold.co/400x500/black/white?text=Product+5',
+        link: '#product5',
+      },
+    ];
   }
 
   private getDefaultProducts(): Product[] {

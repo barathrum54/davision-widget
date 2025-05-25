@@ -81,6 +81,11 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
     return null;
   }
 
+  // Only show two products at a time in the carousel
+  const displayProducts = products.length > 1 
+    ? [products[currentIndex], products[(currentIndex + 1) % products.length]]
+    : [products[currentIndex]];
+
   return (
     <div className={styles.carousel} ref={carouselRef}>
       <div 
@@ -89,15 +94,10 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {products.map((product, index) => (
-          <div
-            key={product.id}
-            className={`${styles.carouselItem} ${
-              index === currentIndex ? styles.active : ''
-            }`}
-            aria-hidden={index !== currentIndex}
-          >
-            <div 
+        <div className={styles.productRow}>
+          {displayProducts.map((product) => (
+            <div
+              key={product.id}
               className={styles.productCard}
               onClick={() => handleProductClick(product)}
             >
@@ -113,69 +113,41 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
               <div className={styles.productInfo}>
                 <h3 className={styles.productTitle}>{product.title}</h3>
                 <p className={styles.productPrice}>{product.price}</p>
-                {product.link && (
-                  <button className={styles.viewButton}>
-                    View Product
-                  </button>
-                )}
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+          {products.length > 2 && (
+            <button 
+              className={styles.nextButton}
+              onClick={handleNext}
+              aria-label="Next product"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
-
+      
       {products.length > 1 && (
-        <div className={styles.carouselControls}>
-          <button
-            className={styles.carouselControl}
-            onClick={handlePrevious}
-            aria-label="Previous product"
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
-          <div className={styles.carouselDots}>
-            {products.map((_, index) => (
-              <button
-                key={index}
-                className={`${styles.carouselDot} ${
-                  index === currentIndex ? styles.activeDot : ''
-                }`}
-                onClick={() => setCurrentIndex(index)}
-                aria-label={`Go to product ${index + 1}`}
-              />
-            ))}
-          </div>
-          <button
-            className={styles.carouselControl}
-            onClick={handleNext}
-            aria-label="Next product"
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M10 6L8.59 7.41L13.17 12L8.59 16.59L10 18L16 12L10 6Z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
+        <div className={styles.carouselDots}>
+          {products.map((_, index) => (
+            <button
+              key={index}
+              className={`${styles.carouselDot} ${
+                Math.floor(index / 2) === Math.floor(currentIndex / 2) ? styles.activeDot : ''
+              }`}
+              onClick={() => setCurrentIndex(index)}
+              aria-label={`Go to product ${index + 1}`}
+            />
+          ))}
         </div>
       )}
+      
+      <div className={styles.carouselFooter}>
+        <p className={styles.productQuestion}>Is there anything else I can help you with?</p>
+      </div>
     </div>
   );
 };
