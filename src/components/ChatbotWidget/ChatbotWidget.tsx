@@ -10,7 +10,7 @@ import ChatbotHeader from '../ChatbotHeader/ChatbotHeader';
 import ChatbotMessages from '../ChatbotMessages/ChatbotMessages';
 import ChatbotInput from '../ChatbotInput/ChatbotInput';
 import ChatbotFooter from '../ChatbotFooter/ChatbotFooter';
-import QuickReplies from '../QuickReplies/QuickReplies';
+// QuickReplies component is imported but not currently used
 
 interface ChatbotWidgetProps {
   config?: Partial<WidgetConfig>;
@@ -31,11 +31,6 @@ const ChatbotWidgetInner: React.FC = () => {
     return <ChatbotButton onClick={toggleChat} />;
   }
 
-  // Handler for quick reply selections
-  const handleQuickReplySelected = (text: string) => {
-    sendMessage(text);
-  };
-
   return (
     <div className={styles.container}>
       <ChatbotHeader 
@@ -51,16 +46,7 @@ const ChatbotWidgetInner: React.FC = () => {
         onRetry={retryMessage}
       />
       
-      <QuickReplies
-        replies={[
-          { id: '1', text: 'What products do you have?' },
-          { id: '2', text: 'How can I order?' },
-          { id: '3', text: 'What is your return policy?' },
-          { id: '4', text: 'Where is my order?' },
-          { id: '5', text: 'Contact customer service' }
-        ]}
-        onReplySelected={handleQuickReplySelected}
-      />
+      {/* QuickReplies component hidden for now */}
       
       <ChatbotInput 
         onSendMessage={sendMessage}

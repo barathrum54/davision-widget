@@ -86,7 +86,7 @@ export class ChatService {
     // This will be handled in the useChat hook
     return {
       response_type: 1, // Product carousel type
-      text: 'Here are some products you might be interested in:',
+      text: '', // Empty text to not show any message with the carousel
       products: this.getRealProductsWithImages(),
       shouldSendFollowUp: true,
     };

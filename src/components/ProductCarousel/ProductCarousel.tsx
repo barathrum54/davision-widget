@@ -11,18 +11,82 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [animating, setAnimating] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
 
   const handlePrevious = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? products.length - 1 : prevIndex - 1
-    );
+    if (animating) return;
+    
+    setAnimating(true);
+    
+    // Apply sliding animation
+    if (rowRef.current) {
+      rowRef.current.style.transform = 'translateX(100%)';
+      rowRef.current.style.transition = 'transform 0.3s ease';
+      
+      setTimeout(() => {
+        setCurrentIndex((prevIndex) => 
+          prevIndex === 0 ? products.length - 1 : prevIndex - 1
+        );
+        
+        // Reset transform immediately after changing index
+        if (rowRef.current) {
+          rowRef.current.style.transition = 'none';
+          rowRef.current.style.transform = 'translateX(-100%)';
+          
+          // Then slide back to normal position with animation
+          setTimeout(() => {
+            if (rowRef.current) {
+              rowRef.current.style.transition = 'transform 0.3s ease';
+              rowRef.current.style.transform = 'translateX(0)';
+              
+              // Animation complete
+              setTimeout(() => {
+                setAnimating(false);
+              }, 300);
+            }
+          }, 50);
+        }
+      }, 300);
+    }
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === products.length - 1 ? 0 : prevIndex + 1
-    );
+    if (animating) return;
+    
+    setAnimating(true);
+    
+    // Apply sliding animation
+    if (rowRef.current) {
+      rowRef.current.style.transform = 'translateX(-100%)';
+      rowRef.current.style.transition = 'transform 0.3s ease';
+      
+      setTimeout(() => {
+        setCurrentIndex((prevIndex) => 
+          prevIndex === products.length - 1 ? 0 : prevIndex + 1
+        );
+        
+        // Reset transform immediately after changing index
+        if (rowRef.current) {
+          rowRef.current.style.transition = 'none';
+          rowRef.current.style.transform = 'translateX(100%)';
+          
+          // Then slide back to normal position with animation
+          setTimeout(() => {
+            if (rowRef.current) {
+              rowRef.current.style.transition = 'transform 0.3s ease';
+              rowRef.current.style.transform = 'translateX(0)';
+              
+              // Animation complete
+              setTimeout(() => {
+                setAnimating(false);
+              }, 300);
+            }
+          }, 50);
+        }
+      }, 300);
+    }
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -34,7 +98,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   };
 
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
+    if (!touchStart || !touchEnd || animating) return;
     
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 50;
@@ -101,7 +165,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div className={styles.productRow}>
+        <div className={styles.productRow} ref={rowRef}>
           {displayProducts.map((product) => (
             <div
               key={product.id}
@@ -130,6 +194,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
               className={styles.nextButton}
               onClick={handleNext}
               aria-label="Next product"
+              disabled={animating}
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

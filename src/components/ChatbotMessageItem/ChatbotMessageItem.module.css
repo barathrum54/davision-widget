@@ -35,8 +35,8 @@
 
 /* Special handling for messages with products */
 .botMessage.hasProducts {
-  max-width: 100%;
-  width: 100%;
+  max-width: 110%;
+  width: 110%;
 }
 
 .botMessage.hasProducts .messageContent {
