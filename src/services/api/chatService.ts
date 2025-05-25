@@ -23,26 +23,24 @@ export interface ChatServiceConfig {
   analyticsEndpoint?: string;
 }
 
+const DEFAULT_API_ENDPOINT = 'https://api.example.com/chat'; // Replace with actual default API endpoint
+
 export class ChatService {
   private config: ChatServiceConfig;
 
   constructor(config: ChatServiceConfig = {}) {
     this.config = config;
     
-    // Set analytics endpoint if provided
     if (config.analyticsEndpoint) {
       analyticsService.setApiEndpoint(config.analyticsEndpoint);
     }
     
-    // Set API endpoint if provided
     if (config.apiEndpoint) {
       apiService.setApiUrl(config.apiEndpoint);
     } else {
-      // Use the default Lambda URL
-      apiService.setApiUrl('https://yztksvq2kbbnkrlkroeapqneim0mvaco.lambda-url.us-west-2.on.aws/process_text');
+      apiService.setApiUrl(DEFAULT_API_ENDPOINT);
     }
     
-    // Set API headers
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
@@ -60,14 +58,11 @@ export class ChatService {
 
   async sendMessage(text: string): Promise<ChatResponse> {
     try {
-      // Check for special command "products" or "dress"
       const lowerText = text.trim().toLowerCase();
       if (lowerText === 'products' || lowerText.includes('dress')) {
-        // Return mock product response without calling API
         return this.getProductsResponse();
       }
       
-      // Use the apiService to send the message for regular messages
       const response = await apiService.sendMessage(text);
       
       return {
@@ -76,28 +71,22 @@ export class ChatService {
         products: response.products,
       };
     } catch (error) {
-      console.error('Error sending message to API:', error);
       return this.getMockResponse(text);
     }
   }
 
-  // Special response for "products" command
   private getProductsResponse(): ChatResponse {
-    // Add a flag to indicate that a follow-up message should be sent
-    // This will be handled in the useChat hook
     return {
-      response_type: 1, // Product carousel type
-      text: '', // Empty text to not show any message with the carousel
+      response_type: 1,
+      text: '',
       products: this.getRealProductsWithImages(),
       shouldSendFollowUp: true,
     };
   }
 
-  // Mock response for demo purposes or when API endpoint is not provided
   private getMockResponse(text: string): Promise<ChatResponse> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        // Simulate different response types based on the message content
         if (text.toLowerCase().includes('product') || text.toLowerCase().includes('dress')) {
           resolve({
             response_type: 1,
@@ -114,7 +103,6 @@ export class ChatService {
     });
   }
 
-  // New method with actual product images matching the shared example
   private getRealProductsWithImages(): Product[] {
     return [
       {

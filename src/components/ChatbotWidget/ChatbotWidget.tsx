@@ -53,18 +53,11 @@ const ChatbotWidgetInner: React.FC = () => {
 
   // This handler will be called BEFORE blur events due to using mousedown
   const handleReplyClick = (text: string) => {
-    console.log('Quick reply selected in widget:', text);
-    
-    // Set flag to prevent immediate close
     preventCloseRef.current = true;
-    
-    // Send the message
     sendMessage(text);
     
-    // Close the quick replies drawer after a delay
     setTimeout(() => {
       setIsInputFocused(false);
-      // Reset the prevention flag
       setTimeout(() => {
         preventCloseRef.current = false;
       }, 100);

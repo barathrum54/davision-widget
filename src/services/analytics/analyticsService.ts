@@ -78,7 +78,6 @@ class AnalyticsService {
     let osVersion = 'unknown';
     let deviceType = 'desktop';
 
-    // Detect browser
     if (ua.indexOf('Chrome') !== -1) {
       browser = 'Chrome';
       browserVersion = ua.match(/Chrome\/(\d+\.\d+)/)![1];
@@ -96,7 +95,6 @@ class AnalyticsService {
       browserVersion = ua.match(/Edge\/(\d+\.\d+)/)![1];
     }
 
-    // Detect OS
     if (ua.indexOf('Windows') !== -1) {
       os = 'Windows';
       osVersion = ua.match(/Windows NT (\d+\.\d+)/)![1];
@@ -115,7 +113,6 @@ class AnalyticsService {
       deviceType = ua.indexOf('iPad') !== -1 ? 'tablet' : 'mobile';
     }
 
-    // Check if mobile based on screen size as a fallback
     if (deviceType === 'desktop' && window.innerWidth <= 768) {
       deviceType = 'mobile';
     }
@@ -160,29 +157,20 @@ class AnalyticsService {
       page: this.getPageInfo(),
     };
 
-    // Log to console for debugging
-    console.log('Tracking event:', trackingData);
+    if (!this.apiEndpoint) return;
 
-    // Send to server if endpoint is configured
-    if (this.apiEndpoint) {
-      try {
-        const response = await fetch(this.apiEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(trackingData),
-        });
-
-        if (!response.ok) {
-          console.error('Failed to send analytics data:', await response.text());
-        }
-      } catch (error) {
-        console.error('Error sending analytics data:', error);
-      }
+    try {
+      await fetch(this.apiEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(trackingData),
+      });
+    } catch (error) {
+      // Silent fail in production
     }
   }
 }
 
-// Export singleton instance
 export const analyticsService = new AnalyticsService(); 

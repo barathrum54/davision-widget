@@ -8,7 +8,7 @@ export const messageStorage = {
       if (!window.localStorage) return;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
     } catch (error) {
-      console.error('Failed to save messages:', error);
+      // Silent fail
     }
   },
 
@@ -24,14 +24,12 @@ export const messageStorage = {
       return messages.map((msg: any) => ({
         ...msg,
         timestamp: new Date(msg.timestamp),
-        // Ensure all required fields exist
         id: msg.id || `legacy-${Date.now()}`,
         text: msg.text || '',
         isUser: typeof msg.isUser === 'boolean' ? msg.isUser : false,
         status: msg.status || 'sent',
       }));
     } catch (error) {
-      console.error('Failed to load messages:', error);
       return [];
     }
   },
@@ -41,7 +39,7 @@ export const messageStorage = {
       if (!window.localStorage) return;
       localStorage.removeItem(STORAGE_KEY);
     } catch (error) {
-      console.error('Failed to clear messages:', error);
+      // Silent fail
     }
   },
 }; 

@@ -19,7 +19,7 @@ export interface ApiProduct {
 }
 
 class ApiService {
-  private apiUrl: string = 'https://yztksvq2kbbnkrlkroeapqneim0mvaco.lambda-url.us-west-2.on.aws/process_text';
+  private apiUrl: string = '';
   private headers: Record<string, string> = {
     'Content-Type': 'application/json'
   };
@@ -58,7 +58,6 @@ class ApiService {
       });
 
       if (!response.ok) {
-        console.error('API Error:', response.status, await response.text());
         throw new Error(`API Error: ${response.status}`);
       }
 
@@ -78,9 +77,6 @@ class ApiService {
       
       return data;
     } catch (error) {
-      console.error('Error sending message:', error);
-      
-      // Return a fallback response
       return {
         response_type: 0,
         text: "I'm sorry, I couldn't process your request. Please try again later."
@@ -96,16 +92,6 @@ class ApiService {
       price: `${apiProduct.price} ${apiProduct.currency}`,
       image: apiProduct.image_url,
       link: apiProduct.url || '#',
-    };
-  }
-
-  // Helper method for database connection params (if needed)
-  getDatabaseConfig() {
-    return {
-      host: 'database-2.cb80kkgiclig.us-west-2.rds.amazonaws.com',
-      user: 'taha',
-      password: '*re6rOz8StOh+6IXoha#',
-      database: 'tahaDatabase'
     };
   }
 }

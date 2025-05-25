@@ -16,7 +16,6 @@ export const useChat = (config: WidgetConfig = {}) => {
     error: null,
   });
 
-  // Initialize chat service
   const chatService = new ChatService({
     apiEndpoint: config.apiEndpoint,
     apiKey: config.apiKey,
@@ -24,7 +23,6 @@ export const useChat = (config: WidgetConfig = {}) => {
     analyticsEndpoint: config.analyticsEndpoint,
   });
 
-  // Load persisted messages on mount
   useEffect(() => {
     if (persistMessages) {
       const savedMessages = messageStorage.getMessages();
@@ -34,14 +32,12 @@ export const useChat = (config: WidgetConfig = {}) => {
     }
   }, [persistMessages]);
 
-  // Save messages when they change
   useEffect(() => {
     if (persistMessages && state.messages.length > 0) {
       messageStorage.saveMessages(state.messages);
     }
   }, [state.messages, persistMessages]);
 
-  // Send initial welcome message when chat opens
   useEffect(() => {
     if (state.isOpen && state.messages.length === 0 && config.welcomeMessage) {
       const welcomeMessage: Message = {
@@ -60,7 +56,6 @@ export const useChat = (config: WidgetConfig = {}) => {
   }, [state.isOpen, state.messages.length, config.welcomeMessage]);
 
   const sendMessage = useCallback(async (text: string): Promise<void> => {
-    // Skip empty messages
     if (!text.trim()) return;
     
     const userMessage: Message = {
@@ -101,7 +96,6 @@ export const useChat = (config: WidgetConfig = {}) => {
         };
       });
 
-      // If the response indicates a follow-up message should be sent, send it after a short delay
       if (response.shouldSendFollowUp) {
         setTimeout(() => {
           const followUpMessage: Message = {
@@ -136,7 +130,6 @@ export const useChat = (config: WidgetConfig = {}) => {
   const toggleChat = useCallback(() => {
     setState(prev => ({ ...prev, isOpen: !prev.isOpen }));
     
-    // Track chat open/close event
     if (!state.isOpen) {
       analyticsService.trackEvent({
         eventType: 'open_chat',
@@ -158,14 +151,12 @@ export const useChat = (config: WidgetConfig = {}) => {
   const retryMessage = useCallback((messageId: string) => {
     const message = state.messages.find(msg => msg.id === messageId);
     if (message && message.isUser) {
-      // Remove the failed message and its error response if any
       setState(prev => ({
         ...prev,
         messages: prev.messages.filter(msg => msg.id !== messageId),
         error: null,
       }));
       
-      // Resend the message
       sendMessage(message.text);
     }
   }, [state.messages, sendMessage]);

@@ -213,19 +213,14 @@ const init = (config?: Partial<WidgetConfig>) => {
     iframe.contentDocument?.close();
     
     // Wait for iframe to be fully loaded
-    setTimeout(() => {
-      if (!widgetIframe || !widgetIframe.contentDocument) return;
-      
-      const iframeDocument = widgetIframe.contentDocument;
-      widgetContainer = iframeDocument.getElementById('chatbot-widget-root');
-      
-      if (widgetContainer) {
-        widgetRoot = createRoot(widgetContainer);
-        widgetRoot.render(<ChatbotWidget config={config} />);
-        console.info('Davision ChatbotWidget initialized in iframe');
-      }
-    }, 100);
+    if (!iframe.contentDocument) return;
     
+    widgetContainer = iframe.contentDocument.getElementById('chatbot-widget-root');
+    
+    if (widgetContainer) {
+      widgetRoot = createRoot(widgetContainer);
+      widgetRoot.render(<ChatbotWidget config={config} />);
+    }
   } catch (error) {
     console.error('Failed to initialize ChatbotWidget:', error);
   }
@@ -265,7 +260,6 @@ const toggle = () => {
   try {
     // This functionality is handled by the ChatContext
     // This method is just a placeholder for future implementation
-    console.info('Toggle method not implemented yet');
   } catch (error) {
     console.error('Failed to toggle ChatbotWidget:', error);
   }
@@ -287,7 +281,6 @@ setTimeout(() => {
   try {
     // Auto-initialize the widget
     init();
-    console.info('ChatbotWidget auto-initialized');
   } catch (error) {
     console.error('Failed to auto-initialize ChatbotWidget:', error);
   }
