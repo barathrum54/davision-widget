@@ -1,14 +1,25 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Message, ChatState } from '../types';
+import type { Message, ChatState } from '../types/chat.types';
+import type { WidgetConfig } from '../types/config.types';
 import { generateId } from '../utils/helpers';
 import { messageStorage } from '../services/storage/messageStorage';
+import { ChatService } from '../services/api/chatService';
 
-export const useChat = (persistMessages: boolean = true) => {
+export const useChat = (config: WidgetConfig = {}) => {
+  const { persistMessages = true } = config;
+  
   const [state, setState] = useState<ChatState>({
     messages: [],
     isOpen: false,
     isLoading: false,
     error: null,
+  });
+
+  // Initialize chat service
+  const chatService = new ChatService({
+    apiEndpoint: config.apiEndpoint,
+    apiKey: config.apiKey,
+    headers: config.headers,
   });
 
   // Load persisted messages on mount
@@ -23,12 +34,33 @@ export const useChat = (persistMessages: boolean = true) => {
 
   // Save messages when they change
   useEffect(() => {
-    if (persistMessages) {
+    if (persistMessages && state.messages.length > 0) {
       messageStorage.saveMessages(state.messages);
     }
   }, [state.messages, persistMessages]);
 
-  const sendMessage = useCallback(async (text: string) => {
+  // Send initial welcome message when chat opens
+  useEffect(() => {
+    if (state.isOpen && state.messages.length === 0 && config.welcomeMessage) {
+      const welcomeMessage: Message = {
+        id: generateId(),
+        text: config.welcomeMessage,
+        timestamp: new Date(),
+        isUser: false,
+        status: 'sent',
+      };
+      
+      setState(prev => ({
+        ...prev,
+        messages: [...prev.messages, welcomeMessage],
+      }));
+    }
+  }, [state.isOpen, state.messages.length, config.welcomeMessage]);
+
+  const sendMessage = useCallback(async (text: string): Promise<void> => {
+    // Skip empty messages
+    if (!text.trim()) return;
+    
     const userMessage: Message = {
       id: generateId(),
       text,
@@ -45,38 +77,41 @@ export const useChat = (persistMessages: boolean = true) => {
     }));
 
     try {
-      // TODO: Implement actual API call
-      // const response = await chatService.sendMessage(text);
+      const response = await chatService.sendMessage(text);
       
-      // Simulate API response
-      setTimeout(() => {
-        const botMessage: Message = {
-          id: generateId(),
-          text: 'This is a demo response. In production, this would come from your API.',
-          timestamp: new Date(),
-          isUser: false,
-          status: 'sent',
-        };
+      const botMessage: Message = {
+        id: generateId(),
+        text: response.text,
+        timestamp: new Date(),
+        isUser: false,
+        status: 'sent',
+        products: response.products,
+      };
 
-        setState(prev => ({
+      setState(prev => {
+        const updatedMessages = prev.messages.map(msg => 
+          msg.id === userMessage.id ? { ...msg, status: 'sent' as const } : msg
+        );
+        return {
           ...prev,
-          messages: prev.messages.map(msg => 
-            msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg
-          ).concat(botMessage),
+          messages: [...updatedMessages, botMessage],
           isLoading: false,
-        }));
-      }, 1000);
+        };
+      });
     } catch (error) {
-      setState(prev => ({
-        ...prev,
-        messages: prev.messages.map(msg => 
-          msg.id === userMessage.id ? { ...msg, status: 'error' } : msg
-        ),
-        isLoading: false,
-        error: 'Failed to send message. Please try again.',
-      }));
+      setState(prev => {
+        const updatedMessages = prev.messages.map(msg => 
+          msg.id === userMessage.id ? { ...msg, status: 'error' as const } : msg
+        );
+        return {
+          ...prev,
+          messages: updatedMessages,
+          isLoading: false,
+          error: 'Failed to send message. Please try again.',
+        };
+      });
     }
-  }, []);
+  }, [chatService]);
 
   const toggleChat = useCallback(() => {
     setState(prev => ({ ...prev, isOpen: !prev.isOpen }));
@@ -92,6 +127,14 @@ export const useChat = (persistMessages: boolean = true) => {
   const retryMessage = useCallback((messageId: string) => {
     const message = state.messages.find(msg => msg.id === messageId);
     if (message && message.isUser) {
+      // Remove the failed message and its error response if any
+      setState(prev => ({
+        ...prev,
+        messages: prev.messages.filter(msg => msg.id !== messageId),
+        error: null,
+      }));
+      
+      // Resend the message
       sendMessage(message.text);
     }
   }, [state.messages, sendMessage]);

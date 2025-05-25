@@ -1,0 +1,117 @@
+.carousel {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.carouselInner {
+  position: relative;
+  height: 180px;
+}
+
+.carouselItem {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.carouselItem.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.productCard {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.productImageContainer {
+  height: 120px;
+  overflow: hidden;
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.productInfo {
+  padding: 8px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.productTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.productPrice {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #735a3c;
+}
+
+.carouselControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.carouselControl {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #735a3c;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.carouselControl:hover {
+  background-color: rgba(115, 90, 60, 0.1);
+}
+
+.carouselDots {
+  display: flex;
+  gap: 4px;
+}
+
+.carouselDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ddd;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.carouselDot.activeDot {
+  background-color: #735a3c;
+} 

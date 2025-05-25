@@ -1,15 +1,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { resolve } from 'path';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  define: {
-    "process.env": {}, // Prevent process is not defined error
-  },
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/main.tsx'),
+      entry: path.resolve(__dirname, 'src/main.tsx'),
       name: 'ChatbotWidget',
       fileName: 'chatbot-widget',
       formats: ['umd'],
@@ -18,10 +15,14 @@ export default defineConfig({
       external: [],
       output: {
         globals: {},
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === 'style.css') return 'chatbot-widget.css';
+          return assetInfo.name || '';
+        },
       },
     },
     outDir: "dist",
-    emptyOutDir: true, // Clear dist folder on build
+    emptyOutDir: true,
     minify: 'terser',
     terserOptions: {
       compress: {
@@ -29,11 +30,12 @@ export default defineConfig({
         drop_debugger: true,
       },
     },
-    sourcemap: false, // Disable sourcemaps for production
+    cssCodeSplit: false,
+    sourcemap: false,
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
 });

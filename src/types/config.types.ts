@@ -10,6 +10,10 @@ export interface ThemeConfig {
     medium: string;
     large: string;
   };
+  messageColors: {
+    user: string;
+    bot: string;
+  };
 }
 
 export interface WidgetConfig {
@@ -20,9 +24,20 @@ export interface WidgetConfig {
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
   theme?: Partial<ThemeConfig>;
   apiEndpoint?: string;
+  apiKey?: string;
+  headers?: Record<string, string>;
   enableVoice?: boolean;
   enableFileUpload?: boolean;
   maxMessageLength?: number;
   persistMessages?: boolean;
   customStyles?: Record<string, any>;
+  productCarouselEnabled?: boolean;
+  quickReplies?: QuickReply[];
+  avatarSrc?: string;
+  logoSrc?: string;
+}
+
+export interface QuickReply {
+  id: string;
+  text: string;
 } 
