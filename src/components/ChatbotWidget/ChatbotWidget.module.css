@@ -18,6 +18,19 @@
   position: relative;
 }
 
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.1s ease;
+}
+
+.withQuickReplies {
+  padding-bottom: 110px; /* Adjust based on the height of your quick replies */
+}
+
 /* Add layout for quick replies positioning */
 .container > *:nth-last-child(2) {
   margin-top: auto;

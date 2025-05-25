@@ -12,6 +12,7 @@
   scrollbar-color: transparent transparent;
   /* Hide default scrollbar for IE/Edge */
   -ms-overflow-style: none;
+  transition: padding-bottom 0.1s ease;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera completely */

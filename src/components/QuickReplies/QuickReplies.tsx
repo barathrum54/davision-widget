@@ -26,24 +26,34 @@ const QuickReplies: React.FC<QuickRepliesProps> = ({
   onReplySelected,
   isVisible = true
 }) => {
-  const handleReplyClick = (reply: QuickReply) => {
-    // Track quick reply click
-    analyticsService.trackEvent({
-      eventType: 'click_quick_reply',
-      eventData: { 
-        replyId: reply.id,
-        replyText: reply.text
-      }
-    });
-    
-    // Send the reply text to the chat
-    onReplySelected(reply.text);
-  };
-  
   // First row: buttons 0, 1 (if available)
   const firstRowButtons = replies.slice(0, 2);
   // Second row: buttons 2, 3, 4 (if available)
   const secondRowButtons = replies.slice(2, 5);
+  
+  // Function to handle button clicks
+  // Using mousedown instead of click to happen BEFORE any blur events
+  function handleButtonMouseDown(e: React.MouseEvent, text: string, id: string) {
+    // Prevent default to avoid focus changes
+    e.preventDefault();
+    
+    console.log('Button mousedown:', text);
+    
+    // Track the click
+    analyticsService.trackEvent({
+      eventType: 'click_quick_reply',
+      eventData: { 
+        replyId: id,
+        replyText: text
+      }
+    });
+    
+    // Immediately call the callback - this happens before blur events
+    onReplySelected(text);
+    
+    // Return false to prevent any other events
+    return false;
+  }
   
   return (
     <div className={`${styles.quickRepliesContainer} ${isVisible ? styles.visible : ''}`}>
@@ -52,7 +62,10 @@ const QuickReplies: React.FC<QuickRepliesProps> = ({
           <button
             key={reply.id}
             className={styles.quickReplyButton}
-            onClick={() => handleReplyClick(reply)}
+            type="button"
+            onMouseDown={(e) => handleButtonMouseDown(e, reply.text, reply.id)}
+            // Disable click to avoid race conditions
+            onClick={(e) => e.preventDefault()}
           >
             {reply.text}
           </button>
@@ -65,7 +78,10 @@ const QuickReplies: React.FC<QuickRepliesProps> = ({
             <button
               key={reply.id}
               className={styles.quickReplyButton}
-              onClick={() => handleReplyClick(reply)}
+              type="button"
+              onMouseDown={(e) => handleButtonMouseDown(e, reply.text, reply.id)}
+              // Disable click to avoid race conditions
+              onClick={(e) => e.preventDefault()}
             >
               {reply.text}
             </button>

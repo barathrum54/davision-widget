@@ -73,12 +73,20 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
     if (message.trim() && !isLoading) {
       const trimmedMessage = message.trim();
       setMessage('');
+      
+      // Explicitly blur the input to remove focus
+      if (inputRef.current) {
+        inputRef.current.blur();
+      }
+      
       await onSendMessage(trimmedMessage);
       
-      // Focus the input after sending
+      // Don't re-focus after sending
+      /*
       if (inputRef.current) {
         inputRef.current.focus();
       }
+      */
     }
   };
 
@@ -86,6 +94,11 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
+      
+      // Ensure focus is removed when sending via Enter key
+      if (inputRef.current) {
+        inputRef.current.blur();
+      }
     }
   };
 
