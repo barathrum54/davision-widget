@@ -40,10 +40,12 @@
 }
 
 .title {
+  text-transform: uppercase;  
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   color: #735a3c;
   font-weight: 600;
+  font-family: 'Roboto', sans-serif;
 }
 
 .subtitle {
@@ -69,11 +71,4 @@
   height: 24px;
   object-fit: contain;
 }
-.closeButton:hover {
-  background-color: rgba(115, 90, 60, 0.1);
-}
 
-.closeButton:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(115, 90, 60, 0.3);
-} 
