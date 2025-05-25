@@ -33,6 +33,18 @@
   border-radius: 0 12px 12px 12px;
 }
 
+/* Special handling for messages with products */
+.botMessage.hasProducts {
+  max-width: 100%;
+  width: 100%;
+}
+
+.botMessage.hasProducts .messageContent {
+  border-radius: 0;
+  box-shadow: none;
+  padding: 10px 0 0 12px;
+}
+
 .errorMessage .messageContent {
   background-color: #ffebee;
   border: 1px solid #ffcdd2;
@@ -70,8 +82,9 @@
 .productsContainer {
   margin-top: 12px;
   width: 100%;
-  max-width: 300px;
-  min-width: 280px;
-  border-radius: 8px;
-  overflow: hidden;
+  max-width: 100%;
+  border-radius: 0;
+  overflow: visible;
+  position: relative;
+  padding-right: 24px; /* To accommodate overflow of the next button */
 } 

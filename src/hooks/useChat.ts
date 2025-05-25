@@ -100,6 +100,24 @@ export const useChat = (config: WidgetConfig = {}) => {
           isLoading: false,
         };
       });
+
+      // If the response indicates a follow-up message should be sent, send it after a short delay
+      if (response.shouldSendFollowUp) {
+        setTimeout(() => {
+          const followUpMessage: Message = {
+            id: generateId(),
+            text: "Is there anything else I can help you with?",
+            timestamp: new Date(),
+            isUser: false,
+            status: 'sent',
+          };
+
+          setState(prev => ({
+            ...prev,
+            messages: [...prev.messages, followUpMessage],
+          }));
+        }, 1000);
+      }
     } catch (error) {
       setState(prev => {
         const updatedMessages = prev.messages.map(msg => 

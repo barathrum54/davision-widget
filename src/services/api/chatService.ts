@@ -12,6 +12,7 @@ interface ChatResponse {
   text: string;
   products?: Product[];
   response_type: 0 | 1;
+  shouldSendFollowUp?: boolean;
 }
 
 export interface ChatServiceConfig {
@@ -58,8 +59,9 @@ export class ChatService {
 
   async sendMessage(text: string): Promise<ChatResponse> {
     try {
-      // Check for special command "products"
-      if (text.trim().toLowerCase() === 'products') {
+      // Check for special command "products" or "dress"
+      const lowerText = text.trim().toLowerCase();
+      if (lowerText === 'products' || lowerText.includes('dress')) {
         // Return mock product response without calling API
         return this.getProductsResponse();
       }
@@ -80,10 +82,13 @@ export class ChatService {
 
   // Special response for "products" command
   private getProductsResponse(): ChatResponse {
+    // Add a flag to indicate that a follow-up message should be sent
+    // This will be handled in the useChat hook
     return {
       response_type: 1, // Product carousel type
       text: 'Here are some products you might be interested in:',
       products: this.getRealProductsWithImages(),
+      shouldSendFollowUp: true,
     };
   }
 

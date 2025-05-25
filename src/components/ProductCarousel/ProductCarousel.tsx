@@ -86,6 +86,13 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
     ? [products[currentIndex], products[(currentIndex + 1) % products.length]]
     : [products[currentIndex]];
 
+  // Truncate product titles to ensure consistent height
+  const truncateTitle = (title: string, maxLength = 40) => {
+    return title.length > maxLength
+      ? `${title.substring(0, maxLength)}...`
+      : title;
+  };
+
   return (
     <div className={styles.carousel} ref={carouselRef}>
       <div 
@@ -111,7 +118,9 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
                 </div>
               )}
               <div className={styles.productInfo}>
-                <h3 className={styles.productTitle}>{product.title}</h3>
+                <h3 className={styles.productTitle}>
+                  {truncateTitle(product.title)}
+                </h3>
                 <p className={styles.productPrice}>{product.price}</p>
               </div>
             </div>
@@ -122,31 +131,12 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
               onClick={handleNext}
               aria-label="Next product"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
           )}
         </div>
-      </div>
-      
-      {products.length > 1 && (
-        <div className={styles.carouselDots}>
-          {products.map((_, index) => (
-            <button
-              key={index}
-              className={`${styles.carouselDot} ${
-                Math.floor(index / 2) === Math.floor(currentIndex / 2) ? styles.activeDot : ''
-              }`}
-              onClick={() => setCurrentIndex(index)}
-              aria-label={`Go to product ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
-      
-      <div className={styles.carouselFooter}>
-        <p className={styles.productQuestion}>Is there anything else I can help you with?</p>
       </div>
     </div>
   );

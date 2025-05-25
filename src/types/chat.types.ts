@@ -29,4 +29,11 @@ export interface ChatActions {
   retryMessage: (messageId: string) => void;
 }
 
-export interface ChatContextType extends ChatState, ChatActions {} 
+export interface ChatContextType extends ChatState, ChatActions {}
+
+export interface ChatResponse {
+  text: string;
+  products?: Product[];
+  response_type: 0 | 1;
+  shouldSendFollowUp?: boolean;
+} 

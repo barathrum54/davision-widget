@@ -12,10 +12,13 @@ interface ChatbotMessageItemProps {
 const ChatbotMessageItem: React.FC<ChatbotMessageItemProps> = ({ message, onRetry }) => {
   const { text, isUser, status, timestamp, products } = message;
   
+  const hasProducts = !isUser && products && products.length > 0;
+  
   const messageClasses = [
     styles.message,
     isUser ? styles.userMessage : styles.botMessage,
     status === 'error' ? styles.errorMessage : '',
+    hasProducts ? styles.hasProducts : '',
   ].filter(Boolean).join(' ');
   
   return (
@@ -45,7 +48,7 @@ const ChatbotMessageItem: React.FC<ChatbotMessageItemProps> = ({ message, onRetr
         <div className={styles.messageTime}>{formatTimestamp(timestamp)}</div>
       </div>
       
-      {products && products.length > 0 && (
+      {hasProducts && (
         <div className={styles.productsContainer}>
           <ProductCarousel products={products} />
         </div>
