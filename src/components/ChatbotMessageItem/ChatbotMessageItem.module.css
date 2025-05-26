@@ -39,11 +39,6 @@
   width: 110%;
 }
 
-.botMessage.hasProducts .messageContent {
-  border-radius: 0;
-  box-shadow: none;
-  padding: 10px 0 0 12px;
-}
 
 .errorMessage .messageContent {
   background-color: #ffebee;
