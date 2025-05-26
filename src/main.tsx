@@ -33,6 +33,7 @@ let widgetWrapper: HTMLElement | null = null;
  * Initialize the chatbot widget
  */
 const init = (config?: Partial<WidgetConfig>) => {
+
   try {
     // Clean up any existing instance
     destroy();
@@ -302,7 +303,11 @@ window.ChatbotWidget = ChatbotAPI;
 setTimeout(() => {
   try {
     // Auto-initialize the widget
-    init();
+    init(
+      {
+        persistMessages: true,
+      }
+    );
   } catch (error) {
     console.error('Failed to auto-initialize ChatbotWidget:', error);
   }

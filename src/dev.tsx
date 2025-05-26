@@ -18,7 +18,8 @@ const defaultConfig: Partial<WidgetConfig> = {
     { id: '3', text: 'What is your return policy?' },
     { id: '4', text: 'Where is my order?' },
     { id: '5', text: 'Contact customer service' }
-  ]
+  ],
+  persistMessages: true,
 };
 
 // Widget instance management
