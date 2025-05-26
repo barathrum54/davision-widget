@@ -1,5 +1,6 @@
 import { analyticsService } from '../analytics/analyticsService';
 import type { Product as ChatProduct } from '../../types/chat.types';
+import axios from 'axios';
 
 export interface ChatResponse {
   response_type: 0 | 1;  // 0 for text, 1 for product carousel
@@ -20,10 +21,23 @@ export interface ApiProduct {
   url?: string;
 }
 
+// Schema for chat interaction payload based on DB schema
+interface ChatInteractionPayload {
+  EventType: string;
+  ButtonLabel?: string;
+  UserAgent?: string;
+  ScreenResolution?: string;
+  OperatingSystem?: string;
+  DeviceType?: string;
+  user_text?: string; // The original message from user
+}
+
 class ApiService {
   private apiUrl: string = '';
+  private corsProxyUrl: string = 'https://cors-anywhere.herokuapp.com/';
   private headers: Record<string, string> = {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest' // Required by cors-anywhere
   };
 
   setApiUrl(url: string): void {
@@ -39,45 +53,71 @@ class ApiService {
     console.log('Headers set to:', this.headers);
   }
 
+  // Get the full URL with CORS proxy
+  private getProxiedUrl(): string {
+    return `${this.corsProxyUrl}${this.apiUrl}`;
+  }
+
   // Debug method to show the exact request that will be made
   debugRequest(text: string): void {
-    const payload = { user_text: text };
+    const payload = this.createPayload(text);
+    const proxiedUrl = this.getProxiedUrl();
     
     console.log('Debug request info:');
-    console.log('URL:', this.apiUrl);
+    console.log('Original URL:', this.apiUrl);
+    console.log('Proxied URL:', proxiedUrl);
     console.log('Method: POST');
-    console.log('Headers:', {
-      'content-type': 'application/json',
-      'sec-ch-ua': '"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"',
-      'sec-ch-ua-mobile': '?0',
-      'sec-ch-ua-platform': '"Windows"'
-    });
+    console.log('Headers:', this.headers);
     console.log('Body:', JSON.stringify(payload));
-    console.log('Mode: cors');
-    console.log('Credentials: omit');
     
-    // Generate code that can be pasted in the console
-    const fetchCode = `
-fetch("${this.apiUrl}", {
-  headers: {
-    "content-type": "application/json",
-    "sec-ch-ua": '"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"Windows"'
-  },
-  referrerPolicy: "strict-origin-when-cross-origin",
-  body: '${JSON.stringify(payload)}',
-  method: "POST",
-  mode: "cors",
-  credentials: "omit"
+    // Generate code that can be pasted in the console for testing
+    const axiosCode = `
+axios.post('${proxiedUrl}', ${JSON.stringify(payload)}, {
+  headers: ${JSON.stringify(this.headers)}
 })
-.then(response => response.json())
-.then(data => console.log(data))
-.catch(error => console.error('Error:', error));
+.then(response => {
+  console.log('Response:', response.data);
+})
+.catch(error => {
+  console.error('Error:', error);
+  if (error.response) {
+    console.log('Response data:', error.response.data);
+    console.log('Response status:', error.response.status);
+  }
+});
 `;
     
     console.log('Copy and paste this code into your browser console to test:');
-    console.log(fetchCode);
+    console.log(axiosCode);
+  }
+
+  private createPayload(text: string): ChatInteractionPayload {
+    // Get browser information
+    const userAgent = navigator.userAgent;
+    const screenResolution = `${window.screen.width}x${window.screen.height}`;
+    
+    // Determine OS
+    let operatingSystem = "Unknown";
+    if (userAgent.indexOf("Win") !== -1) operatingSystem = "Windows";
+    else if (userAgent.indexOf("Mac") !== -1) operatingSystem = "MacOS";
+    else if (userAgent.indexOf("Linux") !== -1) operatingSystem = "Linux";
+    else if (userAgent.indexOf("Android") !== -1) operatingSystem = "Android";
+    else if (userAgent.indexOf("iOS") !== -1) operatingSystem = "iOS";
+    
+    // Determine device type
+    let deviceType = "Desktop";
+    if (/Mobi|Android/i.test(userAgent)) deviceType = "Mobile";
+    else if (/iPad|Tablet/i.test(userAgent)) deviceType = "Tablet";
+    
+    return {
+      EventType: "user_message",
+      ButtonLabel: undefined,
+      UserAgent: userAgent,
+      ScreenResolution: screenResolution,
+      OperatingSystem: operatingSystem,
+      DeviceType: deviceType,
+      user_text: text
+    };
   }
 
   async sendMessage(text: string): Promise<ChatResponse> {
@@ -91,36 +131,22 @@ fetch("${this.apiUrl}", {
         eventData: { message: text }
       });
 
-      // Create the payload exactly as in the Python example
-      const payload = {
-        user_text: text
-      };
+      // Create the payload matching the database schema
+      const payload = this.createPayload(text);
+      const proxiedUrl = this.getProxiedUrl();
 
-      console.log('Sending request to:', this.apiUrl);
+      console.log('Sending request to:', proxiedUrl);
       console.log('With payload:', payload);
 
-      // Send the request with CORS mode - exactly matching the working pattern
-      const response = await fetch(this.apiUrl, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          'sec-ch-ua': '"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"Windows"'
-        },
-        body: JSON.stringify(payload),
-        referrerPolicy: 'strict-origin-when-cross-origin',
-        mode: 'cors',
-        credentials: 'omit'
+      // Use axios with CORS proxy
+      const response = await axios({
+        method: 'post',
+        url: proxiedUrl,
+        data: payload,
+        headers: this.headers
       });
-
-      if (!response.ok) {
-        console.error('API Error:', response.status, response.statusText);
-        throw new Error(`API Error: ${response.status}`);
-      }
-
-      // Parse the response
-      const rawData = await response.json();
+      
+      const rawData = response.data;
       console.log('Received raw response:', rawData);
       
       // Normalize the response format - the Lambda may return a different structure
@@ -167,6 +193,12 @@ fetch("${this.apiUrl}", {
       return data;
     } catch (error) {
       console.error('Request failed:', error);
+      // If we have response data in the error, try to extract it
+      if (axios.isAxiosError(error) && error.response) {
+        console.log('Error response data:', error.response.data);
+        console.log('Error response status:', error.response.status);
+      }
+      
       return {
         response_type: 0,
         text: "I'm sorry, I couldn't process your request. Please try again later."

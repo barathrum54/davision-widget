@@ -45,9 +45,6 @@ export class ChatService {
       'Content-Type': 'application/json',
     };
     
-    if (config.apiKey) {
-      headers['Authorization'] = `Bearer ${config.apiKey}`;
-    }
     
     if (config.headers) {
       Object.assign(headers, config.headers);
