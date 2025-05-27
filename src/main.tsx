@@ -34,7 +34,9 @@ let widgetIframe: HTMLIFrameElement | null = null;
 let widgetWrapper: HTMLElement | null = null;
 
 // Global function for handling chat state changes (works in both dev and production)
-(window as any).handleChatbotResize = createResizeHandler(() => widgetWrapper);
+(
+  window as unknown as { handleChatbotResize: (isOpen: boolean) => void }
+).handleChatbotResize = createResizeHandler(() => widgetWrapper);
 
 /**
  * Initialize the chatbot widget
@@ -101,120 +103,6 @@ const init = (config?: Partial<WidgetConfig>) => {
             
             /* Include bundled CSS */
             ${cssContent}
-            
-            /* Additional critical styles */
-            .ChatbotButton__button___KHlxL {
-              border-radius: 50%;
-              cursor: pointer;
-              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              border: none;
-              padding: 0;
-              color: white;
-              transition: transform 0.3s ease, box-shadow 0.3s ease;
-              animation: pulse 2s infinite;
-              position: fixed;
-              bottom: 20px;
-              right: 20px;
-            }
-            
-            .ChatbotButton__buttonIcon___KHlxL {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 100%;
-              height: 100%;
-            }
-            
-            .ChatbotButton__buttonIcon___KHlxL img {
-              width: 30px;
-              height: 30px;
-            }
-            
-            /* Quick replies styles */
-            .QuickReplies__container___KHlxL {
-              background-color: #8B4513;
-              border-radius: 8px;
-              padding: 10px;
-              margin-bottom: 10px;
-            }
-            
-            .QuickReplies__button___KHlxL {
-              background-color: #8B4513;
-              color: white;
-              border: 1px solid white;
-              border-radius: 16px;
-              padding: 8px 16px;
-              margin: 4px;
-              cursor: pointer;
-              font-size: 14px;
-              transition: all 0.2s;
-            }
-            
-            .QuickReplies__button___KHlxL:hover {
-              background-color: #A0522D;
-            }
-            
-            /* Messages scrollbar */
-            .ChatbotMessages__messagesContainer___KHlxL {
-              scrollbar-width: none;
-            }
-            
-            .ChatbotMessages__messagesContainer___KHlxL::-webkit-scrollbar {
-              display: none;
-            }
-            
-            @keyframes pulse {
-              0% {
-                transform: scale(1);
-              }
-              50% {
-                transform: scale(1.05);
-              }
-              100% {
-                transform: scale(1);
-              }
-            }
-            
-            /* Responsive styles for iframe content */
-            @media (max-width: 480px) {
-              .ChatbotWidget_widget__KHlxL {
-                bottom: 0 !important;
-                right: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-              }
-              
-              .ChatbotWidget_container__KHlxL {
-                width: 100% !important;
-                height: 100% !important;
-                border-radius: 0 !important;
-                box-shadow: none !important;
-              }
-            }
-            
-            /* Offline overlay styles */
-            .OfflineOverlay__overlay___KHlxL {
-              position: fixed;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background-color: rgba(0, 0, 0, 0.5);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              z-index: 9999;
-            }
-            
-            .OfflineOverlay__content___KHlxL {
-              background-color: white;
-              padding: 20px;
-              border-radius: 8px;
-              text-align: center;
-            }
           </style>
         </head>
         <body>

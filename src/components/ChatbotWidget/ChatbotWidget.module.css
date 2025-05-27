@@ -8,7 +8,7 @@
 }
 
 .container {
-  width: 380px;
+  width: 340px;
   height: 600px;
   background-color: #f1ece9;
   border-radius: 35px;
@@ -19,6 +19,7 @@
   position: relative;
   transform-origin: bottom right;
   pointer-events: auto;
+  padding: 0px;
 }
 
 /* Opening animation */
@@ -64,7 +65,7 @@
 }
 
 .withQuickReplies {
-  padding-bottom: 110px;
+  padding-bottom: 30px;
 }
 
 .container > *:nth-last-child(2) {
@@ -86,7 +87,6 @@
   .container {
     width: 100vw;
     height: 100vh;
-    border-radius: 0;
     box-shadow: none;
     transform-origin: center;
   }

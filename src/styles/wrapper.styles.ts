@@ -26,7 +26,7 @@ export const WRAPPER_CSS = `
     }
     
     #chatbot-widget-wrapper.chat-open {
-      width: 380px !important;
+      width: 340px !important;
       height: 600px !important;
     }
     
