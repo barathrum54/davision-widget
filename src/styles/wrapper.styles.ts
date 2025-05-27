@@ -73,19 +73,14 @@ export const WRAPPER_CSS = `
  */
 export const createResizeHandler = (getWrapper: () => HTMLElement | null) => {
   return (isOpen: boolean) => {
-    console.log("handleChatbotResize called with isOpen:", isOpen);
     const wrapper = getWrapper();
-    console.log("wrapper exists:", !!wrapper);
     if (wrapper) {
-      console.log("Current wrapper classes before:", wrapper.className);
       if (isOpen) {
         wrapper.classList.add("chat-open");
-        console.log("Added chat-open class");
       } else {
         wrapper.classList.remove("chat-open");
         console.log("Removed chat-open class");
       }
-      console.log("Current wrapper classes after:", wrapper.className);
     }
   };
 };

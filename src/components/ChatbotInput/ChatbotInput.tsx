@@ -94,13 +94,6 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
         buttonLabel = "ui_submit";
       }
 
-      console.log("ChatbotInput handleSend:", {
-        trimmedMessage,
-        buttonLabel,
-        inputMethod,
-        sendMethod,
-      });
-
       setMessage("");
       setInputMethod(null); // Reset input method
 

@@ -86,8 +86,6 @@ const ChatbotWidgetInner: React.FC = () => {
     // Close the quick replies drawer when sending a message
     setIsInputFocused(false);
 
-    console.log("ChatbotWidget handleSendMessage:", { text, buttonLabel });
-
     // Send the message with buttonLabel
     await sendMessage(text, buttonLabel);
   };
@@ -125,27 +123,17 @@ const ChatbotWidgetInner: React.FC = () => {
   ];
 
   const handleToggleChat = () => {
-    console.log(
-      "handleToggleChat called, current isOpen:",
-      isOpen,
-      "will be:",
-      !isOpen
-    );
-
     // Notify parent window about chat state change FIRST
     // Check if we're in an iframe or direct rendering
     if (window.parent !== window) {
       // We're in an iframe, use postMessage to parent
-      console.log("In iframe, sending postMessage");
       window.parent.postMessage(
         { type: "CHATBOT_RESIZE", isOpen: !isOpen },
         "*"
       );
     } else {
       // We're in direct rendering (development), use global function
-      console.log("In direct rendering, using global function");
       if ((window as any).handleChatbotResize) {
-        console.log("Global function exists, calling with:", !isOpen);
         (window as any).handleChatbotResize(!isOpen);
       } else {
         console.log("Global function does not exist!");
