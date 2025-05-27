@@ -1,18 +1,17 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import ChatbotWidget from './components/ChatbotWidget/ChatbotWidget';
-import type { WidgetConfig } from './types/config.types';
+import React from "react";
+import { createRoot } from "react-dom/client";
+import ChatbotWidget from "./components/ChatbotWidget/ChatbotWidget";
+import type { WidgetConfig } from "./types/config.types";
 // Import CSS - it will be automatically bundled with the JS
-import './components/ChatbotWidget/style.css';
+import "./components/ChatbotWidget/style.css";
 
 // Import other component CSS files to ensure they're bundled
-import './components/ChatbotInput/ChatbotInput.module.css';
-import './components/ChatbotMessages/ChatbotMessages.module.css';
-import './components/QuickReplies/QuickReplies.module.css';
-import './components/ChatbotWidget/ChatbotWidget.module.css';
-import './components/ChatbotButton/ChatbotButton.module.css';
-import iframeStyles from './components/ChatbotWidget/ChatbotIframe.module.css';
-import './components/OfflineOverlay/OfflineOverlay.module.css';
+import "./components/ChatbotInput/ChatbotInput.module.css";
+import "./components/ChatbotMessages/ChatbotMessages.module.css";
+import "./components/QuickReplies/QuickReplies.module.css";
+import "./components/ChatbotWidget/ChatbotWidget.module.css";
+import "./components/ChatbotButton/ChatbotButton.module.css";
+import "./components/OfflineOverlay/OfflineOverlay.module.css";
 
 declare global {
   interface Window {
@@ -33,26 +32,25 @@ let widgetWrapper: HTMLElement | null = null;
  * Initialize the chatbot widget
  */
 const init = (config?: Partial<WidgetConfig>) => {
-
   try {
     // Clean up any existing instance
     destroy();
-    
+
     // Create a wrapper element that we can style
-    const wrapper = document.createElement('div');
-    wrapper.id = 'chatbot-widget-wrapper';
-    wrapper.style.position = 'fixed';
-    wrapper.style.bottom = '0';
-    wrapper.style.right = '0';
-    wrapper.style.width = '100vw';
-    wrapper.style.height = '100vh';
-    wrapper.style.zIndex = '9999';
-    wrapper.style.overflow = 'hidden';
-    wrapper.style.border = 'none';
-    wrapper.style.backgroundColor = 'transparent';
-    
+    const wrapper = document.createElement("div");
+    wrapper.id = "chatbot-widget-wrapper";
+    wrapper.style.position = "fixed";
+    wrapper.style.bottom = "0";
+    wrapper.style.right = "0";
+    wrapper.style.width = "100vw";
+    wrapper.style.height = "100vh";
+    wrapper.style.zIndex = "9999";
+    wrapper.style.overflow = "hidden";
+    wrapper.style.border = "none";
+    wrapper.style.backgroundColor = "transparent";
+
     // Add media query for responsiveness
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = `
       @media (max-width: 480px) {
         #chatbot-widget-wrapper {
@@ -66,30 +64,30 @@ const init = (config?: Partial<WidgetConfig>) => {
       }
     `;
     document.head.appendChild(style);
-    
+
     // Create iframe inside the wrapper
-    const iframe = document.createElement('iframe');
-    iframe.id = 'chatbot-widget-iframe';
-    iframe.setAttribute('chatbot-widget-iframe', '');
-    
+    const iframe = document.createElement("iframe");
+    iframe.id = "chatbot-widget-iframe";
+    iframe.setAttribute("chatbot-widget-iframe", "");
+
     // Reset iframe default styles
-    iframe.style.border = 'none';
-    iframe.style.width = '100%';
-    iframe.style.height = '100%';
-    iframe.style.overflow = 'hidden';
-    iframe.style.backgroundColor = 'transparent';
-    
+    iframe.style.border = "none";
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.overflow = "hidden";
+    iframe.style.backgroundColor = "transparent";
+
     // Append elements to DOM
     wrapper.appendChild(iframe);
     document.body.appendChild(wrapper);
-    
+
     widgetWrapper = wrapper;
     widgetIframe = iframe;
-    
+
     // Access the CSS content that was bundled with the JS
-    // @ts-ignore - CSS_CONTENT is defined in the bundled file
-    const cssContent = typeof CSS_CONTENT !== 'undefined' ? CSS_CONTENT : '';
-    
+    // @ts-expect-error - CSS_CONTENT is defined in the bundled file
+    const cssContent = typeof CSS_CONTENT !== "undefined" ? CSS_CONTENT : "";
+
     // Write content directly to iframe to avoid CORS issues
     iframe.contentDocument?.open();
     iframe.contentDocument?.write(`
@@ -234,18 +232,20 @@ const init = (config?: Partial<WidgetConfig>) => {
       </html>
     `);
     iframe.contentDocument?.close();
-    
+
     // Wait for iframe to be fully loaded
     if (!iframe.contentDocument) return;
-    
-    widgetContainer = iframe.contentDocument.getElementById('chatbot-widget-root');
-    
+
+    widgetContainer = iframe.contentDocument.getElementById(
+      "chatbot-widget-root"
+    );
+
     if (widgetContainer) {
       widgetRoot = createRoot(widgetContainer);
       widgetRoot.render(<ChatbotWidget config={config} />);
     }
   } catch (error) {
-    console.error('Failed to initialize ChatbotWidget:', error);
+    console.error("Failed to initialize ChatbotWidget:", error);
   }
 };
 
@@ -258,21 +258,21 @@ const destroy = () => {
       widgetRoot.unmount();
       widgetRoot = null;
     }
-    
+
     if (widgetContainer) {
       widgetContainer = null;
     }
-    
+
     if (widgetIframe) {
       widgetIframe = null;
     }
-    
+
     if (widgetWrapper) {
       widgetWrapper.remove();
       widgetWrapper = null;
     }
   } catch (error) {
-    console.error('Failed to destroy ChatbotWidget:', error);
+    console.error("Failed to destroy ChatbotWidget:", error);
   }
 };
 
@@ -284,7 +284,7 @@ const toggle = () => {
     // This functionality is handled by the ChatContext
     // This method is just a placeholder for future implementation
   } catch (error) {
-    console.error('Failed to toggle ChatbotWidget:', error);
+    console.error("Failed to toggle ChatbotWidget:", error);
   }
 };
 
@@ -303,24 +303,22 @@ window.ChatbotWidget = ChatbotAPI;
 setTimeout(() => {
   try {
     // Auto-initialize the widget
-    init(
-      {
-        persistMessages: true,
-      }
-    );
+    init({
+      persistMessages: true,
+    });
   } catch (error) {
-    console.error('Failed to auto-initialize ChatbotWidget:', error);
+    console.error("Failed to auto-initialize ChatbotWidget:", error);
   }
 }, 0);
 
 // Also auto-init if data attribute is present for backward compatibility
-document.addEventListener('DOMContentLoaded', () => {
-  const script = Array.from(document.getElementsByTagName('script')).find(
-    (s) => s.src.includes('chatbot-widget') && s.hasAttribute('data-auto-init')
+document.addEventListener("DOMContentLoaded", () => {
+  const script = Array.from(document.getElementsByTagName("script")).find(
+    (s) => s.src.includes("chatbot-widget") && s.hasAttribute("data-auto-init")
   );
-  
+
   if (script) {
-    const configStr = script.getAttribute('data-config');
+    const configStr = script.getAttribute("data-config");
     const config = configStr ? JSON.parse(configStr) : undefined;
     init(config);
   }

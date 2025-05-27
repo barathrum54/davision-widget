@@ -1,9 +1,13 @@
 /// <reference types="vite/client" />
 
-interface Chatbot {
-  init: () => void;
+import type { WidgetConfig } from "./types/config.types";
+
+interface ChatbotWidget {
+  init: (config?: Partial<WidgetConfig>) => void;
+  destroy: () => void;
+  toggle: () => void;
 }
 
 interface Window {
-  Chatbot: Chatbot;
+  ChatbotWidget: ChatbotWidget;
 }
