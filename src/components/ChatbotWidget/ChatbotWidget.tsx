@@ -188,7 +188,7 @@ const ChatbotWidgetInner: React.FC = () => {
       <ChatbotInput
         onSendMessage={handleSendMessage}
         isLoading={isLoading}
-        placeholder="Mesajınızı yazın..."
+        placeholder="Ask me anything..."
         enableVoice={true}
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}

@@ -1,6 +1,6 @@
-import React from 'react';
-import styles from './ChatbotHeader.module.css';
-import { CARET_DOWN_ICON } from '../../assets/base64Images';
+import React from "react";
+import styles from "./ChatbotHeader.module.css";
+import { CARET_DOWN_ICON } from "../../assets/base64Images";
 
 interface ChatbotHeaderProps {
   title: string;
@@ -17,32 +17,34 @@ const ChatbotHeader: React.FC<ChatbotHeaderProps> = ({
 }) => {
   return (
     <div className={styles.header}>
-      <div className={styles.headerLeft}>
-        {avatarSrc ? (
-          <img
-            className={styles.avatar}
-            src={avatarSrc}
-            alt={`${title} avatar`}
-          />
-        ) : (
-          <div className={styles.avatarFallback}>
-            {title.charAt(0).toUpperCase()}
+      <div className={styles.headerInner}>
+        <div className={styles.headerLeft}>
+          {avatarSrc ? (
+            <img
+              className={styles.avatar}
+              src={avatarSrc}
+              alt={`${title} avatar`}
+            />
+          ) : (
+            <div className={styles.avatarFallback}>
+              {title.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className={styles.headerText}>
+            <h2 className={styles.title}>{title}</h2>
+            {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
           </div>
-        )}
-        <div className={styles.headerText}>
-          <h2 className={styles.title}>{title}</h2>
-          {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
         </div>
+        <button
+          className={styles.closeButton}
+          onClick={onClose}
+          aria-label="Close chat"
+        >
+          <img src={CARET_DOWN_ICON} alt="Close" />
+        </button>
       </div>
-      <button 
-        className={styles.closeButton} 
-        onClick={onClose}
-        aria-label="Close chat"
-      >
-        <img src={CARET_DOWN_ICON} alt="Close" />
-      </button>
     </div>
   );
 };
 
-export default ChatbotHeader; 
+export default ChatbotHeader;

@@ -38,7 +38,10 @@
   max-width: 110%;
   width: 110%;
 }
-
+.botMessage.hasProducts .messageContent {
+  width: fit-content;
+  max-width: 80%;
+}
 
 .errorMessage .messageContent {
   background-color: #ffebee;
@@ -82,4 +85,4 @@
   overflow: visible;
   position: relative;
   padding-right: 24px; /* To accommodate overflow of the next button */
-} 
+}

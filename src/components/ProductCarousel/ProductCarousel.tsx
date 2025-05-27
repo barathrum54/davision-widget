@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import type { Product } from '../../types/chat.types';
-import styles from './ProductCarousel.module.css';
-import { analyticsService } from '../../services/analytics/analyticsService';
+import React, { useState, useRef, useEffect } from "react";
+import type { Product } from "../../types/chat.types";
+import styles from "./ProductCarousel.module.css";
+import { analyticsService } from "../../services/analytics/analyticsService";
 
 interface ProductCarouselProps {
   products: Product[];
@@ -27,7 +27,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   // Update carousel transform after index change
   useEffect(() => {
     if (!productsContainerRef.current) return;
-    
+
     // Update the transform position based on the current index
     const slideWidth = 50; // Width as percentage
     const position = currentIndex * slideWidth;
@@ -38,30 +38,29 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   const handleNext = () => {
     if (isAnimating) return;
     setIsAnimating(true);
-    
+
     // Always move one position forward
     const nextIndex = currentIndex + 1;
-    
+
     // If we reach the end of one "round", we'll eventually need to reset
     // But we do that after sliding safely through the duplicated items
     if (nextIndex >= products.length * 2) {
       // Schedule a reset to the first round after animation completes
       setTimeout(() => {
         if (productsContainerRef.current) {
-          productsContainerRef.current.style.transition = 'none';
           setCurrentIndex(nextIndex % products.length);
-          
+
           // Force reflow
           void productsContainerRef.current.offsetHeight;
-          
+
           // Restore transition
-          productsContainerRef.current.style.transition = '';
+          productsContainerRef.current.style.transition = "";
         }
       }, 300);
     }
-    
+
     setCurrentIndex(nextIndex);
-    
+
     setTimeout(() => {
       setIsAnimating(false);
     }, 300);
@@ -70,29 +69,28 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   const handlePrevious = () => {
     if (isAnimating) return;
     setIsAnimating(true);
-    
+
     // Always move one position backward
     const prevIndex = currentIndex - 1;
-    
+
     // If we go before the first item of the first round, we need to reset
     if (prevIndex < 0) {
       // Schedule a reset to the last round after animation completes
       setTimeout(() => {
         if (productsContainerRef.current) {
-          productsContainerRef.current.style.transition = 'none';
           setCurrentIndex(products.length + prevIndex);
-          
+
           // Force reflow
           void productsContainerRef.current.offsetHeight;
-          
+
           // Restore transition
-          productsContainerRef.current.style.transition = '';
+          productsContainerRef.current.style.transition = "";
         }
       }, 300);
     }
-    
+
     setCurrentIndex(prevIndex);
-    
+
     setTimeout(() => {
       setIsAnimating(false);
     }, 300);
@@ -108,17 +106,17 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
 
   const handleTouchEnd = () => {
     if (!touchStart || !touchEnd || isAnimating) return;
-    
+
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 50;
     const isRightSwipe = distance < -50;
-    
+
     if (isLeftSwipe) {
       handleNext();
     } else if (isRightSwipe) {
       handlePrevious();
     }
-    
+
     setTouchStart(null);
     setTouchEnd(null);
   };
@@ -126,13 +124,13 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   const handleProductClick = (product: Product) => {
     // Track product click
     analyticsService.trackEvent({
-      eventType: 'view_product',
-      eventData: { productId: product.id, productTitle: product.title }
+      eventType: "view_product",
+      eventData: { productId: product.id, productTitle: product.title },
     });
-    
+
     // Open link if provided
     if (product.link) {
-      window.open(product.link, '_blank');
+      window.open(product.link, "_blank");
     }
   };
 
@@ -141,12 +139,12 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
     if (products && products.length > 0) {
       const actualIndex = currentIndex % products.length;
       analyticsService.trackEvent({
-        eventType: 'view_product',
-        eventData: { 
+        eventType: "view_product",
+        eventData: {
           productId: products[actualIndex].id,
           productTitle: products[actualIndex].title,
-          viewType: 'carousel'
-        }
+          viewType: "carousel",
+        },
       });
     }
   }, [currentIndex, products]);
@@ -163,21 +161,21 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   }
 
   const visibleProducts = getVisibleProducts();
-  
+
   return (
     <div className={styles.carousel} ref={containerRef}>
-      <div 
+      <div
         className={styles.carouselInner}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
         <div className={styles.productRow}>
-          <div 
-            className={styles.productsContainer} 
+          <div
+            className={styles.productsContainer}
             ref={productsContainerRef}
-            style={{ 
-              transition: isAnimating ? 'transform 0.3s ease' : ''
+            style={{
+              transition: isAnimating ? "transform 0.3s ease !important" : "",
             }}
           >
             {allProducts.map((product, index) => (
@@ -204,16 +202,28 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
               </div>
             ))}
           </div>
-          
+
           {products.length > 1 && (
-            <button 
+            <button
               className={styles.nextButton}
               onClick={handleNext}
               aria-label="Next product"
               disabled={isAnimating}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 18l6-6-6-6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
           )}
@@ -223,4 +233,4 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   );
 };
 
-export default ProductCarousel; 
+export default ProductCarousel;

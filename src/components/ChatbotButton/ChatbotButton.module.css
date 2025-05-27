@@ -93,18 +93,15 @@
 /* Mobile - NO ANIMATIONS, instant behavior */
 @media (max-width: 1023px) {
   .button {
-    transition: none !important;
     animation: none !important;
   }
 
   .button:hover {
     transform: none !important;
-    transition: none !important;
   }
 
   .button:active {
     transform: none !important;
-    transition: none !important;
   }
 
   .buttonClicked {

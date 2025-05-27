@@ -38,7 +38,6 @@ export const WRAPPER_CSS = `
     #chatbot-widget-wrapper {
       width: 100px !important;
       height: 100px !important;
-      transition: none !important; /* Instant resize on mobile */
     }
     
     #chatbot-widget-wrapper.chat-open {
@@ -48,28 +47,23 @@ export const WRAPPER_CSS = `
       right: 0 !important;
       top: 0 !important;
       left: 0 !important;
-      transition: none !important; /* Instant resize on mobile */
     }
     
     /* Hide FAB instantly when chat opens ONLY on responsive to prevent teleporting */
     #chatbot-widget-wrapper.chat-open button[aria-label="Open chat"] {
       display: none !important;
-      transition: none !important;
     }
     
     /* Remove ALL transitions on responsive for instant behavior */
     #chatbot-widget-wrapper button {
-      transition: none !important;
     }
     
     #chatbot-widget-wrapper.chat-open button {
-      transition: none !important;
     }
     
     /* Remove all transitions from iframe and container on mobile */
     #chatbot-widget-wrapper iframe,
     #chatbot-widget-wrapper > div {
-      transition: none !important;
     }
   }
 `;

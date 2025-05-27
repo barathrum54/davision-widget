@@ -2,7 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 16px;
+  padding: 10px;
+  padding-bottom: 14px;
   font-size: 10px;
   color: #735a3c;
   gap: 4px;
@@ -17,7 +18,10 @@
 }
 
 .logo {
-  height: 12px;
+  height: 10px;
+  opacity: 0.9;
+  filter: brightness(0) saturate(100%) invert(35%) sepia(12%) saturate(1188%)
+    hue-rotate(353deg) brightness(92%) contrast(86%);
   width: auto;
   object-fit: contain;
-} 
+}

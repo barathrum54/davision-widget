@@ -59,7 +59,6 @@ export class ChatService {
       };
 
       // Log for debugging
-
       return chatResponse;
     } catch (error) {
       console.error("Error in chatService.sendMessage:", error);

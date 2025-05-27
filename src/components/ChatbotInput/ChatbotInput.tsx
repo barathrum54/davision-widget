@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import type { KeyboardEvent } from 'react';
-import styles from './ChatbotInput.module.css';
-import { SEND_ICON, MICROPHONE_ICON } from '../../assets/base64Images';
+import React, { useState, useRef, useEffect } from "react";
+import type { KeyboardEvent } from "react";
+import styles from "./ChatbotInput.module.css";
+import { SEND_ICON, MICROPHONE_ICON } from "../../assets/base64Images";
 
 // Add SpeechRecognition type definitions
 interface Window {
@@ -22,7 +22,7 @@ interface ChatbotInputProps {
 
 const ChatbotInput: React.FC<ChatbotInputProps> = ({
   onSendMessage,
-  placeholder = 'Mesajınızı yazın...',
+  placeholder = "Ask me anything...",
   maxLength = 500,
   enableVoice = false,
   isLoading = false,
@@ -30,7 +30,7 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
   onBlur,
   disabled = false,
 }) => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [isListening, setIsListening] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
@@ -38,33 +38,35 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
   // Initialize speech recognition
   useEffect(() => {
     if (enableVoice) {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const SpeechRecognition =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
         recognitionRef.current = new SpeechRecognition();
         recognitionRef.current.continuous = false;
         recognitionRef.current.interimResults = false;
-        recognitionRef.current.lang = 'tr-TR';
-        
+        recognitionRef.current.lang = "tr-TR";
+
         recognitionRef.current.onresult = (event: any) => {
           const transcript = event.results[0][0].transcript;
-          setMessage(prevMessage => {
+          setMessage((prevMessage) => {
             // Append to existing message if there's already text
             return prevMessage ? `${prevMessage} ${transcript}` : transcript;
           });
           setIsListening(false);
         };
-        
+
         recognitionRef.current.onerror = (event: any) => {
-          console.error('Speech recognition error', event.error);
+          console.error("Speech recognition error", event.error);
           setIsListening(false);
         };
-        
+
         recognitionRef.current.onend = () => {
           setIsListening(false);
         };
       }
     }
-    
+
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.abort();
@@ -75,15 +77,15 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
   const handleSend = async () => {
     if (message.trim() && !isLoading) {
       const trimmedMessage = message.trim();
-      setMessage('');
-      
+      setMessage("");
+
       // Explicitly blur the input to remove focus
       if (inputRef.current) {
         inputRef.current.blur();
       }
-      
+
       await onSendMessage(trimmedMessage);
-      
+
       // Don't re-focus after sending
       /*
       if (inputRef.current) {
@@ -94,10 +96,10 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
-      
+
       // Ensure focus is removed when sending via Enter key
       if (inputRef.current) {
         inputRef.current.blur();
@@ -107,35 +109,37 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
 
   const handleVoiceInput = () => {
     if (!recognitionRef.current) {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const SpeechRecognition =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
         recognitionRef.current = new SpeechRecognition();
         recognitionRef.current.continuous = false;
         recognitionRef.current.interimResults = false;
-        recognitionRef.current.lang = 'tr-TR';
-        
+        recognitionRef.current.lang = "tr-TR";
+
         recognitionRef.current.onresult = (event: any) => {
           const transcript = event.results[0][0].transcript;
-          setMessage(prevMessage => {
+          setMessage((prevMessage) => {
             return prevMessage ? `${prevMessage} ${transcript}` : transcript;
           });
           setIsListening(false);
         };
-        
+
         recognitionRef.current.onerror = (event: any) => {
-          console.error('Speech recognition error', event.error);
+          console.error("Speech recognition error", event.error);
           setIsListening(false);
         };
-        
+
         recognitionRef.current.onend = () => {
           setIsListening(false);
         };
       } else {
-        alert('Speech recognition is not supported in your browser.');
+        alert("Speech recognition is not supported in your browser.");
         return;
       }
     }
-    
+
     if (isListening) {
       recognitionRef.current.stop();
       setIsListening(false);
@@ -144,7 +148,7 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
         recognitionRef.current.start();
         setIsListening(true);
       } catch (error) {
-        console.error('Speech recognition error:', error);
+        console.error("Speech recognition error:", error);
       }
     }
   };
@@ -191,18 +195,20 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
           <img src={SEND_ICON} alt="Send" width="20" height="20" />
         </button>
       </div>
-      
+
       {enableVoice && (
         <button
-          className={`${styles.voiceButton} ${isListening ? styles.listening : ''}`}
+          className={`${styles.voiceButton} ${
+            isListening ? styles.listening : ""
+          }`}
           onClick={handleVoiceInput}
           aria-label="Voice input"
         >
-          <img src={MICROPHONE_ICON} alt="Microphone" width="20" height="20" />
+          <img src={MICROPHONE_ICON} alt="Microphone" width="16" height="16" />
         </button>
       )}
     </div>
   );
 };
 
-export default ChatbotInput; 
+export default ChatbotInput;

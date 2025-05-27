@@ -1,11 +1,19 @@
 .header {
-  padding: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #ddd;
   margin-bottom: 10px;
-  border-radius: 8px 8px 0 0;
+  padding: 12px;
+  padding-bottom: 0;
+}
+
+.headerInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 16px;
 }
 
 .headerLeft {
@@ -15,8 +23,8 @@
 }
 
 .avatar {
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -40,12 +48,12 @@
 }
 
 .title {
-  text-transform: uppercase;  
+  text-transform: uppercase;
   margin: 0;
   font-size: 14px;
   color: #735a3c;
   font-weight: 600;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .subtitle {
@@ -71,4 +79,3 @@
   height: 20px;
   object-fit: contain;
 }
-
