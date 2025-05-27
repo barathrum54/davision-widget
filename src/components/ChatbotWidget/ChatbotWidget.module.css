@@ -91,26 +91,49 @@
     transform-origin: center;
   }
 
-  /* Mobile-specific animations - simple scale and fade */
+  /* Mobile - NO ANIMATIONS, instant behavior */
+  .opening {
+    animation: none !important;
+  }
+
+  .closing {
+    animation: none !important;
+  }
+
   @keyframes chatboxOpen {
     0% {
-      opacity: 0;
-      transform: scale(0.95);
+      opacity: 1;
+      transform: none;
     }
     100% {
       opacity: 1;
-      transform: scale(1);
+      transform: none;
     }
   }
 
   @keyframes chatboxClose {
     0% {
       opacity: 1;
-      transform: scale(1);
+      transform: none;
     }
     100% {
-      opacity: 0;
-      transform: scale(0.98);
+      opacity: 1;
+      transform: none;
     }
+  }
+
+  /* Remove all transitions from all elements on mobile */
+  .widget,
+  .container,
+  .contentWrapper,
+  .overlayContainer {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* Ensure everything appears instantly */
+  .widget * {
+    transition: none !important;
+    animation: none !important;
   }
 }

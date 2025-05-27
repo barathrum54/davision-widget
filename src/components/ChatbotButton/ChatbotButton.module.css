@@ -1,8 +1,8 @@
 .button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  transform: none;
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -16,20 +16,36 @@
   animation: pulse 2s infinite;
   pointer-events: auto;
   z-index: 10000;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .button:hover {
-  transform: translate(-50%, -50%) scale(1.1);
+  transform: scale(1.1);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  outline: none;
 }
 
 .button:active {
-  transform: translate(-50%, -50%) scale(0.95);
+  transform: none;
+  box-shadow: none;
+  outline: none;
+  border: none;
+  background-color: inherit;
 }
 
 .button:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.button:focus-visible {
+  outline: none;
+  border: none;
 }
 
 /* Click animation for opening chat */
@@ -50,26 +66,74 @@
 
 @keyframes pulse {
   0% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
   50% {
-    transform: translate(-50%, -50%) scale(1.05);
+    transform: scale(1.05);
   }
   100% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
 }
 
 @keyframes buttonClick {
   0% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
   50% {
-    transform: translate(-50%, -50%) scale(1.2) rotate(5deg);
+    transform: scale(1.2) rotate(5deg);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
   }
   100% {
-    transform: translate(-50%, -50%) scale(0.8) rotate(0deg);
+    transform: scale(0.8) rotate(0deg);
     opacity: 0.8;
+  }
+}
+
+/* Mobile - NO ANIMATIONS, instant behavior */
+@media (max-width: 1023px) {
+  .button {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .button:hover {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .button:active {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .buttonClicked {
+    animation: none !important;
+  }
+
+  /* Disable pulse animation on mobile */
+  @keyframes pulse {
+    0% {
+      transform: none;
+    }
+    50% {
+      transform: none;
+    }
+    100% {
+      transform: none;
+    }
+  }
+
+  /* Disable click animation on mobile */
+  @keyframes buttonClick {
+    0% {
+      transform: none;
+    }
+    50% {
+      transform: none;
+    }
+    100% {
+      transform: none;
+    }
   }
 }

@@ -14,10 +14,14 @@ const ChatbotButton: React.FC<ChatbotButtonProps> = ({
   size = 60,
 }) => {
   const [isClicked, setIsClicked] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
 
   const handleClick = () => {
-    console.log("ChatbotButton handleClick");
     setIsClicked(true);
+    setIsHidden(true); // Hide immediately to prevent visual glitch
+
+    // Check if we're on responsive screen (mobile/tablet)
+    const isResponsive = window.innerWidth < 1024;
 
     // Handle resize for both iframe and development contexts
     if (window.parent !== window) {
@@ -35,10 +39,7 @@ const ChatbotButton: React.FC<ChatbotButtonProps> = ({
       }
     }
 
-    // Trigger the onClick after a short delay to let the animation start
-    setTimeout(() => {
-      onClick();
-    }, 100);
+    onClick();
   };
 
   // Combine inline styles with CSS modules
@@ -46,14 +47,7 @@ const ChatbotButton: React.FC<ChatbotButtonProps> = ({
     backgroundColor: color,
     width: `${size}px`,
     height: `${size}px`,
-    position: "fixed" as "fixed",
-    bottom: "20px",
-    right: "20px",
-    zIndex: "1000",
-    borderRadius: "50%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    display: isHidden ? "none" : "flex", // Hide when clicked
   };
 
   return (

@@ -45,18 +45,12 @@ const ChatbotWidgetInner: React.FC = () => {
       setShowContainer(true);
       setIsAnimating(true);
       // Remove animation class after animation completes
-      const timer = setTimeout(() => {
-        setIsAnimating(false);
-      }, 300); // Match new opening animation duration
-      return () => clearTimeout(timer);
+      setIsAnimating(false);
     } else if (!isOpen && showContainer) {
       setIsAnimating(true);
       // Hide container after closing animation
-      const timer = setTimeout(() => {
-        setShowContainer(false);
-        setIsAnimating(false);
-      }, 200); // Match new closing animation duration
-      return () => clearTimeout(timer);
+      setShowContainer(false);
+      setIsAnimating(false);
     }
   }, [isOpen, showContainer]);
 
@@ -67,10 +61,7 @@ const ChatbotWidgetInner: React.FC = () => {
     );
     if (messagesContainer) {
       // Add a delay to let the drawer open before scrolling
-      setTimeout(() => {
-        // Scroll to bottom after the height adjustment
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }, 100); // 100ms delay to match faster animation
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }, [isInputFocused]);
 
@@ -139,7 +130,7 @@ const ChatbotWidgetInner: React.FC = () => {
       !isOpen
     );
 
-    // Notify parent window about chat state change
+    // Notify parent window about chat state change FIRST
     // Check if we're in an iframe or direct rendering
     if (window.parent !== window) {
       // We're in an iframe, use postMessage to parent
@@ -159,7 +150,6 @@ const ChatbotWidgetInner: React.FC = () => {
       }
     }
 
-    // Use the existing toggleChat function
     toggleChat();
   };
 

@@ -103,47 +103,8 @@
     Fixed positioned element
   </div>
 
-  <script>
-    let counter = 0;
-
-    function incrementCounter() {
-      counter++;
-      document.getElementById('counter').textContent = counter;
-    }
-
-    // Add click listener to body to test general clicking
-    document.body.addEventListener('click', function (e) {
-      // Only increment if clicking on body or test areas, not buttons
-      if (e.target === document.body || e.target.classList.contains('test-content')) {
-        incrementCounter();
-      }
-    });
-
-    // Monitor wrapper size changes
-    function updateWrapperStatus() {
-      const wrapper = document.getElementById('chatbot-widget-wrapper');
-      const statusElement = document.getElementById('wrapper-status');
-
-      if (wrapper && statusElement) {
-        const rect = wrapper.getBoundingClientRect();
-        const isOpen = wrapper.classList.contains('chat-open');
-        statusElement.innerHTML = `
-          Size: ${Math.round(rect.width)}x${Math.round(rect.height)}px | 
-          State: ${isOpen ? 'OPEN' : 'CLOSED'} | 
-          Classes: ${wrapper.className || 'none'}
-        `;
-      } else if (statusElement) {
-        statusElement.textContent = 'Wrapper not found yet...';
-      }
-    }
-
-    // Update status every 100ms
-    setInterval(updateWrapperStatus, 100);
-
-    // Initial status update
-    setTimeout(updateWrapperStatus, 1000);
-  </script>
   <script src="./dist/chatbot-widget.umd.cjs"></script>
+
 </body>
 
 </html>

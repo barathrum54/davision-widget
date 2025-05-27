@@ -13,7 +13,7 @@ export const WRAPPER_STYLES = {
   overflow: "visible",
   border: "none",
   backgroundColor: "transparent",
-  transition: "all 0.3s ease",
+  transition: "all 0.3s ease", // Only for desktop
 } as const;
 
 export const WRAPPER_CSS = `
@@ -22,12 +22,15 @@ export const WRAPPER_CSS = `
     #chatbot-widget-wrapper {
       width: 100px !important;
       height: 100px !important;
+      transition: all 0.3s ease !important;
     }
     
     #chatbot-widget-wrapper.chat-open {
       width: 380px !important;
       height: 600px !important;
     }
+    
+    /* On desktop, keep normal FAB behavior - no instant hiding */
   }
   
   /* Mobile and mid tablet (smaller than large) */
@@ -35,6 +38,7 @@ export const WRAPPER_CSS = `
     #chatbot-widget-wrapper {
       width: 100px !important;
       height: 100px !important;
+      transition: none !important; /* Instant resize on mobile */
     }
     
     #chatbot-widget-wrapper.chat-open {
@@ -44,6 +48,28 @@ export const WRAPPER_CSS = `
       right: 0 !important;
       top: 0 !important;
       left: 0 !important;
+      transition: none !important; /* Instant resize on mobile */
+    }
+    
+    /* Hide FAB instantly when chat opens ONLY on responsive to prevent teleporting */
+    #chatbot-widget-wrapper.chat-open button[aria-label="Open chat"] {
+      display: none !important;
+      transition: none !important;
+    }
+    
+    /* Remove ALL transitions on responsive for instant behavior */
+    #chatbot-widget-wrapper button {
+      transition: none !important;
+    }
+    
+    #chatbot-widget-wrapper.chat-open button {
+      transition: none !important;
+    }
+    
+    /* Remove all transitions from iframe and container on mobile */
+    #chatbot-widget-wrapper iframe,
+    #chatbot-widget-wrapper > div {
+      transition: none !important;
     }
   }
 `;
