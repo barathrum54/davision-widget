@@ -82,12 +82,14 @@ const ChatbotWidgetInner: React.FC = () => {
     }, 200);
   };
 
-  const handleSendMessage = async (text: string) => {
+  const handleSendMessage = async (text: string, buttonLabel?: string) => {
     // Close the quick replies drawer when sending a message
     setIsInputFocused(false);
 
-    // Send the message
-    await sendMessage(text);
+    console.log("ChatbotWidget handleSendMessage:", { text, buttonLabel });
+
+    // Send the message with buttonLabel
+    await sendMessage(text, buttonLabel);
   };
 
   const handleInputFocus = () => {

@@ -98,6 +98,8 @@ export const useChat = (config: WidgetConfig = {}) => {
     async (text: string, buttonLabel?: string): Promise<void> => {
       if (!text.trim()) return;
 
+      console.log("useChat sendMessage:", { text, buttonLabel });
+
       // Don't send if offline
       if (state.isOffline) {
         setState((prev) => ({

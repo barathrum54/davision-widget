@@ -1,4 +1,3 @@
-import { analyticsService } from "../analytics/analyticsService";
 import type { Product } from "../../types/chat.types";
 
 // Sample static products for product carousel (fallback only)
@@ -248,121 +247,94 @@ class ApiService {
   }
 
   async sendMessage(text: string, buttonLabel?: string): Promise<ChatResponse> {
-    try {
-      // Track sending message
-      analyticsService.trackEvent({
-        eventType: "send_message",
-        eventData: { message: text, buttonLabel },
-      });
-
-      // If we have a real API URL, make the actual request
-      if (this.apiUrl && this.apiUrl !== "") {
-        // Prepare analytics payload for ChatInteractions table
-        const requestBody = {
-          EventType: "send_message",
-          ButtonLabel: buttonLabel || null,
-          UserAgent: navigator.userAgent,
-          ScreenResolution: `${window.screen.width}x${window.screen.height}`,
-          OperatingSystem: this.getOperatingSystem(),
-          DeviceType: this.getDeviceType(),
-          user_text: text,
-          RawPayload: {
-            timestamp: new Date().toISOString(),
-            sessionId: `session_${Date.now()}`,
-            message: text,
-          },
-        };
-
-        // Get the final URL (with or without proxy)
-        const finalUrl = this.getRequestUrl(this.apiUrl);
-
-        console.log(
-          `🔗 Using ${
-            this.useProxy ? "CORS proxy" : "direct"
-          } request to: ${finalUrl}`
-        );
-
-        // Prepare headers with dynamic Origin
-        const requestHeaders = {
-          ...this.headers,
-          ...(this.useProxy && { Origin: window.location.origin }),
-        };
-
-        const response = await RequestLogger.loggedFetch(finalUrl, {
-          method: "POST",
-          headers: requestHeaders,
-          body: JSON.stringify(requestBody),
-        });
-
-        if (!response.ok) {
-          throw new Error(
-            `HTTP error! status: ${response.status} ${response.statusText}`
-          );
-        }
-
-        let data;
-        try {
-          data = await response.json();
-        } catch (parseError) {
-          throw new Error(`Failed to parse response JSON: ${parseError}`);
-        }
-
-        // Track successful response
-        analyticsService.trackEvent({
-          eventType: "send_message",
-          eventData: { responseType: data.response_type || 0 },
-        });
-
-        // Handle minimal response format - API only returns response_type: 0
-        const responseType = data.response_type || 0;
-
-        return {
-          response_type: responseType,
-          text:
-            responseType === 1
-              ? "Here are some products you might like:"
-              : "Thank you for your message. How else can I help you?",
-          products: responseType === 1 ? SAMPLE_PRODUCTS : undefined,
-        };
-      }
-
-      // Fallback to mock response if no API URL is set
-      console.warn("No API URL configured, using mock response");
-
-      // Simulate API response with 50% chance of product or text response
-      const useProducts = Math.random() < 0.5;
-
-      // Create response object
-      const response: ChatResponse = {
-        response_type: useProducts ? 1 : 0,
-        text: useProducts
-          ? "Here are some products you might like:"
-          : "Hello, how can I help you today?",
+    // If we have a real API URL, make the actual request
+    if (this.apiUrl && this.apiUrl !== "") {
+      // Prepare analytics payload for ChatInteractions table
+      const requestBody = {
+        EventType: "send_message",
+        ButtonLabel: buttonLabel || null,
+        UserAgent: navigator.userAgent,
+        ScreenResolution: `${window.screen.width}x${window.screen.height}`,
+        OperatingSystem: this.getOperatingSystem(),
+        DeviceType: this.getDeviceType(),
+        user_text: text,
+        RawPayload: {
+          timestamp: new Date().toISOString(),
+          sessionId: `session_${Date.now()}`,
+          message: text,
+        },
       };
 
-      // Add products if it's a product response
-      if (useProducts) {
-        response.products = SAMPLE_PRODUCTS;
-      }
+      // Get the final URL (with or without proxy)
+      const finalUrl = this.getRequestUrl(this.apiUrl);
 
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log(
+        `🔗 Using ${
+          this.useProxy ? "CORS proxy" : "direct"
+        } request to: ${finalUrl}`
+      );
 
-      // Track successful response
-      analyticsService.trackEvent({
-        eventType: "send_message",
-        eventData: { responseType: response.response_type },
+      // Prepare headers with dynamic Origin
+      const requestHeaders = {
+        ...this.headers,
+        ...(this.useProxy && { Origin: window.location.origin }),
+      };
+
+      const response = await RequestLogger.loggedFetch(finalUrl, {
+        method: "POST",
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
       });
 
-      return response;
-    } catch (error) {
-      console.error("Request failed:", error);
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error! status: ${response.status} ${response.statusText}`
+        );
+      }
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        throw new Error(`Failed to parse response JSON: ${parseError}`);
+      }
+
+      // Handle minimal response format - API only returns response_type: 0
+      const responseType = data.response_type || 0;
 
       return {
-        response_type: 0,
-        text: "I'm sorry, I couldn't process your request. Please try again later.",
+        response_type: responseType,
+        text:
+          responseType === 1
+            ? "Here are some products you might like:"
+            : "Thank you for your message. How else can I help you?",
+        products: responseType === 1 ? SAMPLE_PRODUCTS : undefined,
       };
     }
+
+    // Fallback to mock response if no API URL is set
+    console.warn("No API URL configured, using mock response");
+
+    // Simulate API response with 50% chance of product or text response
+    const useProducts = Math.random() < 0.5;
+
+    // Create response object
+    const response: ChatResponse = {
+      response_type: useProducts ? 1 : 0,
+      text: useProducts
+        ? "Here are some products you might like:"
+        : "Hello, how can I help you today?",
+    };
+
+    // Add products if it's a product response
+    if (useProducts) {
+      response.products = SAMPLE_PRODUCTS;
+    }
+
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    return response;
   }
 }
 

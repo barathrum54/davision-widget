@@ -1,11 +1,7 @@
-import type { Product } from "../../types/chat.types";
 import { analyticsService } from "../analytics/analyticsService";
-import { apiService } from "./apiService";
+import { apiService, type ChatResponse as ApiChatResponse } from "./apiService";
 
-interface ChatResponse {
-  text: string;
-  products?: Product[];
-  response_type: 0 | 1;
+interface ChatResponse extends ApiChatResponse {
   shouldSendFollowUp?: boolean;
 }
 
@@ -58,9 +54,21 @@ export class ChatService {
   }
 
   async sendMessage(text: string, buttonLabel?: string): Promise<ChatResponse> {
+    // Track sending message
+    analyticsService.trackEvent({
+      eventType: "send_message",
+      eventData: { message: text, buttonLabel },
+    });
+
     try {
       // Get response from API service
       const response = await apiService.sendMessage(text, buttonLabel);
+
+      // Track successful response
+      analyticsService.trackEvent({
+        eventType: "send_message",
+        eventData: { responseType: response.response_type || 0, success: true },
+      });
 
       // Add shouldSendFollowUp flag for potential future use
       const chatResponse: ChatResponse = {
@@ -69,16 +77,20 @@ export class ChatService {
         shouldSendFollowUp: false,
       };
 
-      // Log for debugging
       return chatResponse;
     } catch (error) {
-      console.error("Error in chatService.sendMessage:", error);
+      // Track failed response
+      analyticsService.trackEvent({
+        eventType: "send_message",
+        eventData: {
+          buttonLabel,
+          success: false,
+          error: error instanceof Error ? error.message : "Unknown error",
+        },
+      });
 
-      // Return default error response
-      return {
-        response_type: 0,
-        text: "I'm sorry, I couldn't process your request. Please try again later.",
-      };
+      // Re-throw error to be handled by useChat hook
+      throw error;
     }
   }
 }
