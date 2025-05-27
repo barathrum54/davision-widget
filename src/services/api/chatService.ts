@@ -14,6 +14,8 @@ export interface ChatServiceConfig {
   apiKey?: string;
   headers?: Record<string, string>;
   analyticsEndpoint?: string;
+  corsProxy?: string;
+  useProxy?: boolean;
 }
 
 const DEFAULT_API_ENDPOINT =
@@ -33,6 +35,15 @@ export class ChatService {
       apiService.setApiUrl(config.apiEndpoint);
     } else {
       apiService.setApiUrl(DEFAULT_API_ENDPOINT);
+    }
+
+    // Configure CORS proxy if provided
+    if (config.corsProxy) {
+      apiService.setCorsProxy(config.corsProxy);
+    }
+
+    if (config.useProxy !== undefined) {
+      apiService.setUseProxy(config.useProxy);
     }
 
     const headers: Record<string, string> = {

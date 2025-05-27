@@ -21,12 +21,14 @@ export interface WidgetConfig {
   subtitle?: string;
   placeholder?: string;
   welcomeMessage?: string;
-  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
+  position?: "bottom-right" | "bottom-left" | "top-right" | "top-left";
   theme?: Partial<ThemeConfig>;
   apiEndpoint?: string;
   apiKey?: string;
   headers?: Record<string, string>;
   analyticsEndpoint?: string;
+  corsProxy?: string;
+  useProxy?: boolean;
   enableVoice?: boolean;
   enableFileUpload?: boolean;
   maxMessageLength?: number;
@@ -41,4 +43,4 @@ export interface WidgetConfig {
 export interface QuickReply {
   id: string;
   text: string;
-} 
+}
