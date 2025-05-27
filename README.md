@@ -49,7 +49,7 @@ The widget automatically tracks user interaction methods:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/davision-widget.git
+git clone https://github.com/barathrum54/davision-widget.git
 cd davision-widget
 
 # Install dependencies
@@ -104,12 +104,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## 📞 Support
-
-- **Documentation**: [docs.davision.com](https://docs.davision.com)
-- **Issues**: [GitHub Issues](https://github.com/your-org/davision-widget/issues)
-- **Email**: support@davision.com
 
 ## 🎯 Roadmap
 
