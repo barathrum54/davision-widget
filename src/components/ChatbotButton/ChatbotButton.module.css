@@ -1,4 +1,8 @@
 .button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -10,15 +14,17 @@
   color: white;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: pulse 2s infinite;
+  pointer-events: auto;
+  z-index: 10000;
 }
 
 .button:hover {
-  transform: scale(1.1);
+  transform: translate(-50%, -50%) scale(1.1);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .button:active {
-  transform: scale(0.95);
+  transform: translate(-50%, -50%) scale(0.95);
 }
 
 .button:focus {
@@ -44,26 +50,26 @@
 
 @keyframes pulse {
   0% {
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1);
   }
   50% {
-    transform: scale(1.05);
+    transform: translate(-50%, -50%) scale(1.05);
   }
   100% {
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 
 @keyframes buttonClick {
   0% {
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1);
   }
   50% {
-    transform: scale(1.2) rotate(5deg);
+    transform: translate(-50%, -50%) scale(1.2) rotate(5deg);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
   }
   100% {
-    transform: scale(0.8) rotate(0deg);
+    transform: translate(-50%, -50%) scale(0.8) rotate(0deg);
     opacity: 0.8;
   }
 }

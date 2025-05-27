@@ -1,13 +1,14 @@
 .widget {
-  position: fixed;
+  position: relative;
   z-index: 9999;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  bottom: 20px;
-  right: 20px;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
 }
 
 .container {
-  width: 360px;
+  width: 380px;
   height: 600px;
   background-color: #f1ece9;
   border-radius: 16px;
@@ -17,45 +18,38 @@
   overflow: hidden;
   position: relative;
   transform-origin: bottom right;
+  pointer-events: auto;
 }
 
 /* Opening animation */
 .opening {
-  animation: chatboxOpen 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: chatboxOpen 0.3s ease-out forwards;
 }
 
 /* Closing animation */
 .closing {
-  animation: chatboxClose 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+  animation: chatboxClose 0.2s ease-in forwards;
 }
 
 @keyframes chatboxOpen {
   0% {
     opacity: 0;
-    transform: scale(0.3) translateY(20px);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05) translateY(-5px);
+    transform: scale(0.8);
   }
   100% {
     opacity: 1;
-    transform: scale(1) translateY(0);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transform: scale(1);
   }
 }
 
 @keyframes chatboxClose {
   0% {
     opacity: 1;
-    transform: scale(1) translateY(0);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transform: scale(1);
   }
   100% {
     opacity: 0;
-    transform: scale(0.8) translateY(10px);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    transform: scale(0.9);
   }
 }
 
@@ -66,13 +60,13 @@
   overflow: hidden;
   position: relative;
   transition: all 0.1s ease;
+  pointer-events: auto;
 }
 
 .withQuickReplies {
-  padding-bottom: 110px; /* Adjust based on the height of your quick replies */
+  padding-bottom: 110px;
 }
 
-/* Add layout for quick replies positioning */
 .container > *:nth-last-child(2) {
   margin-top: auto;
 }
@@ -84,46 +78,39 @@
   width: 100%;
   height: 100%;
   z-index: 2000;
-  pointer-events: all;
+  pointer-events: auto;
 }
 
-/* Responsive styles for mobile */
-@media (max-width: 480px) {
-  .widget {
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-  }
-
+/* Mobile and tablet responsive styles */
+@media (max-width: 1023px) {
   .container {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     border-radius: 0;
     box-shadow: none;
-    transform-origin: center bottom;
+    transform-origin: center;
   }
 
-  /* Mobile-specific animations */
+  /* Mobile-specific animations - simple scale and fade */
   @keyframes chatboxOpen {
     0% {
       opacity: 0;
-      transform: translateY(100%);
+      transform: scale(0.95);
     }
     100% {
       opacity: 1;
-      transform: translateY(0);
+      transform: scale(1);
     }
   }
 
   @keyframes chatboxClose {
     0% {
       opacity: 1;
-      transform: translateY(0);
+      transform: scale(1);
     }
     100% {
       opacity: 0;
-      transform: translateY(100%);
+      transform: scale(0.98);
     }
   }
 }

@@ -47,7 +47,7 @@ const ChatbotWidgetInner: React.FC = () => {
       // Remove animation class after animation completes
       const timer = setTimeout(() => {
         setIsAnimating(false);
-      }, 400); // Match animation duration
+      }, 300); // Match new opening animation duration
       return () => clearTimeout(timer);
     } else if (!isOpen && showContainer) {
       setIsAnimating(true);
@@ -55,7 +55,7 @@ const ChatbotWidgetInner: React.FC = () => {
       const timer = setTimeout(() => {
         setShowContainer(false);
         setIsAnimating(false);
-      }, 300); // Slightly shorter for closing
+      }, 200); // Match new closing animation duration
       return () => clearTimeout(timer);
     }
   }, [isOpen, showContainer]);
@@ -131,6 +131,38 @@ const ChatbotWidgetInner: React.FC = () => {
     { id: "5", text: "Resort '24" },
   ];
 
+  const handleToggleChat = () => {
+    console.log(
+      "handleToggleChat called, current isOpen:",
+      isOpen,
+      "will be:",
+      !isOpen
+    );
+
+    // Notify parent window about chat state change
+    // Check if we're in an iframe or direct rendering
+    if (window.parent !== window) {
+      // We're in an iframe, use postMessage to parent
+      console.log("In iframe, sending postMessage");
+      window.parent.postMessage(
+        { type: "CHATBOT_RESIZE", isOpen: !isOpen },
+        "*"
+      );
+    } else {
+      // We're in direct rendering (development), use global function
+      console.log("In direct rendering, using global function");
+      if ((window as any).handleChatbotResize) {
+        console.log("Global function exists, calling with:", !isOpen);
+        (window as any).handleChatbotResize(!isOpen);
+      } else {
+        console.log("Global function does not exist!");
+      }
+    }
+
+    // Use the existing toggleChat function
+    toggleChat();
+  };
+
   return (
     <div
       className={`${styles.container} ${
@@ -141,7 +173,7 @@ const ChatbotWidgetInner: React.FC = () => {
         title="Nova"
         subtitle=""
         avatarSrc={CHAT_BUTTON_ICON}
-        onClose={toggleChat}
+        onClose={handleToggleChat}
       />
 
       <div

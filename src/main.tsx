@@ -2,6 +2,11 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import ChatbotWidget from "./components/ChatbotWidget/ChatbotWidget";
 import type { WidgetConfig } from "./types/config.types";
+import {
+  WRAPPER_STYLES,
+  WRAPPER_CSS,
+  createResizeHandler,
+} from "./styles/wrapper.styles";
 // Import CSS - it will be automatically bundled with the JS
 import "./components/ChatbotWidget/style.css";
 
@@ -28,6 +33,9 @@ let widgetContainer: HTMLElement | null = null;
 let widgetIframe: HTMLIFrameElement | null = null;
 let widgetWrapper: HTMLElement | null = null;
 
+// Global function for handling chat state changes (works in both dev and production)
+(window as any).handleChatbotResize = createResizeHandler(() => widgetWrapper);
+
 /**
  * Initialize the chatbot widget
  */
@@ -39,30 +47,13 @@ const init = (config?: Partial<WidgetConfig>) => {
     // Create a wrapper element that we can style
     const wrapper = document.createElement("div");
     wrapper.id = "chatbot-widget-wrapper";
-    wrapper.style.position = "fixed";
-    wrapper.style.bottom = "0";
-    wrapper.style.right = "0";
-    wrapper.style.width = "100vw";
-    wrapper.style.height = "100vh";
-    wrapper.style.zIndex = "9999";
-    wrapper.style.overflow = "hidden";
-    wrapper.style.border = "none";
-    wrapper.style.backgroundColor = "transparent";
 
-    // Add media query for responsiveness
+    // Apply centralized styles
+    Object.assign(wrapper.style, WRAPPER_STYLES);
+
+    // Add media query for responsive sizing
     const style = document.createElement("style");
-    style.textContent = `
-      @media (max-width: 480px) {
-        #chatbot-widget-wrapper {
-          width: 100% !important;
-          height: 100vh !important;
-          top: 0 !important;
-          left: 0 !important;
-          right: 0 !important;
-          bottom: 0 !important;
-        }
-      }
-    `;
+    style.textContent = WRAPPER_CSS;
     document.head.appendChild(style);
 
     // Create iframe inside the wrapper
@@ -244,6 +235,27 @@ const init = (config?: Partial<WidgetConfig>) => {
       widgetRoot = createRoot(widgetContainer);
       widgetRoot.render(<ChatbotWidget config={config} />);
     }
+
+    // Add message listener for dynamic resizing
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === "CHATBOT_RESIZE") {
+        const isOpen = event.data.isOpen;
+        if (isOpen) {
+          wrapper.classList.add("chat-open");
+        } else {
+          wrapper.classList.remove("chat-open");
+        }
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    // Store the handler for cleanup
+    (
+      wrapper as HTMLElement & {
+        _messageHandler?: (event: MessageEvent) => void;
+      }
+    )._messageHandler = handleMessage;
   } catch (error) {
     console.error("Failed to initialize ChatbotWidget:", error);
   }

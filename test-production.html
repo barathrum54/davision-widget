@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Production Build Test - Davision Chatbot</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .content-section {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .test-info {
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Production Build Test</h1>
+    <p>Testing responsive wrapper sizing</p>
+  </header>
+
+  <main>
+    <section class="content-section">
+      <h2>Test Instructions</h2>
+      <div class="test-info">
+        <h3>Expected Behavior:</h3>
+        <ul>
+          <li><strong>Large screens (≥1024px):</strong>
+            <ul>
+              <li>FAB button: 100x100px wrapper</li>
+              <li>Open chat: 380x600px wrapper</li>
+            </ul>
+          </li>
+          <li><strong>Small screens (&lt;1024px):</strong>
+            <ul>
+              <li>FAB button: 100x100px wrapper</li>
+              <li>Open chat: 100vw x 100vh wrapper (full screen)</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <p>Open the browser developer tools and inspect the <code>#chatbot-widget-wrapper</code> element to verify the
+        dimensions change correctly when you click the FAB button.</p>
+
+      <p>Check the console for debug logs showing the resize function being called.</p>
+    </section>
+
+    <section class="content-section">
+      <h2>About This Test</h2>
+      <p>This page tests the production build of the Davision chatbot widget with responsive wrapper sizing. The widget
+        should not block interactions with this page content.</p>
+
+      <p>Try clicking on this text, scrolling, and interacting with the page while the chatbot is both open and closed
+        to ensure it doesn't interfere with normal page functionality.</p>
+
+      <button onclick="alert('Page interaction works!')">Test Page Interaction</button>
+    </section>
+  </main>
+
+  <!-- Load the production build -->
+  <script src="./dist/chatbot-widget.umd.cjs"></script>
+</body>
+
+</html>
