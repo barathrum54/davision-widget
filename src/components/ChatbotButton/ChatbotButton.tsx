@@ -1,6 +1,6 @@
-import React from 'react';
-import styles from './ChatbotButton.module.css';
-import { CHAT_BUTTON_ICON } from '../../assets/base64Images';
+import React, { useState } from "react";
+import styles from "./ChatbotButton.module.css";
+import { CHAT_BUTTON_ICON } from "../../assets/base64Images";
 
 interface ChatbotButtonProps {
   onClick: () => void;
@@ -8,31 +8,41 @@ interface ChatbotButtonProps {
   size?: number;
 }
 
-const ChatbotButton: React.FC<ChatbotButtonProps> = ({ 
-  onClick, 
-  color = '#0084FF',
-  size = 60 
+const ChatbotButton: React.FC<ChatbotButtonProps> = ({
+  onClick,
+  color = "#0084FF",
+  size = 60,
 }) => {
+  const [isClicked, setIsClicked] = useState(false);
+
+  const handleClick = () => {
+    setIsClicked(true);
+    // Trigger the onClick after a short delay to let the animation start
+    setTimeout(() => {
+      onClick();
+    }, 100);
+  };
+
   // Combine inline styles with CSS modules
   const buttonStyle = {
     backgroundColor: color,
     width: `${size}px`,
     height: `${size}px`,
-    position: 'fixed' as 'fixed',
-    bottom: '20px',
-    right: '20px',
-    zIndex: '1000',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    position: "fixed" as "fixed",
+    bottom: "20px",
+    right: "20px",
+    zIndex: "1000",
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   };
 
   return (
-    <button 
-      className={styles.button}
+    <button
+      className={`${styles.button} ${isClicked ? styles.buttonClicked : ""}`}
       style={buttonStyle}
-      onClick={onClick}
+      onClick={handleClick}
       aria-label="Open chat"
     >
       <div className={styles.buttonIcon}>
@@ -42,4 +52,4 @@ const ChatbotButton: React.FC<ChatbotButtonProps> = ({
   );
 };
 
-export default ChatbotButton; 
+export default ChatbotButton;
