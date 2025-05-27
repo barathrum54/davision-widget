@@ -1,8 +1,8 @@
 /** @jsx React.createElement */
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import ChatbotWidget from './components/ChatbotWidget/ChatbotWidget';
-import type { WidgetConfig } from './types/config.types';
+import React from "react";
+import { createRoot } from "react-dom/client";
+import ChatbotWidget from "./components/ChatbotWidget/ChatbotWidget";
+import type { WidgetConfig } from "./types/config.types";
 
 /**
  * Development entry point for the chatbot widget
@@ -13,11 +13,11 @@ import type { WidgetConfig } from './types/config.types';
 const defaultConfig: Partial<WidgetConfig> = {
   welcomeMessage: "Hello! How can I help you today?",
   quickReplies: [
-    { id: '1', text: 'What products do you have?' },
-    { id: '2', text: 'How can I order?' },
-    { id: '3', text: 'What is your return policy?' },
-    { id: '4', text: 'Where is my order?' },
-    { id: '5', text: 'Contact customer service' }
+    { id: "1", text: "What products do you have?" },
+    { id: "2", text: "How can I order?" },
+    { id: "3", text: "What is your return policy?" },
+    { id: "4", text: "Where is my order?" },
+    { id: "5", text: "Contact customer service" },
   ],
   persistMessages: true,
 };
@@ -32,18 +32,16 @@ let widgetContainer: HTMLElement | null = null;
 export const initDev = (config?: Partial<WidgetConfig>) => {
   // Clean up any existing instance
   destroyDev();
-  
+
   // Create container for widget
-  widgetContainer = document.createElement('div');
-  widgetContainer.id = 'chatbot-dev-container';
+  widgetContainer = document.createElement("div");
+  widgetContainer.id = "chatbot-dev-container";
   document.body.appendChild(widgetContainer);
-  
+
   // Render the widget
   widgetRoot = createRoot(widgetContainer);
   widgetRoot.render(<ChatbotWidget config={{ ...defaultConfig, ...config }} />);
-  
-  console.log('Development widget initialized');
-  
+
   return {
     container: widgetContainer,
     root: widgetRoot,
@@ -58,7 +56,7 @@ export const destroyDev = () => {
     widgetRoot.unmount();
     widgetRoot = null;
   }
-  
+
   if (widgetContainer) {
     widgetContainer.remove();
     widgetContainer = null;
