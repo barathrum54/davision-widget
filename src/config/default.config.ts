@@ -24,7 +24,7 @@ export const defaultConfig: WidgetConfig = {
   title: "Nova",
   subtitle: "How can I assist you today?",
   placeholder: "Ask me anything...",
-  welcomeMessage: "Welcome I am Eve, how can I assist you?",
+  welcomeMessage: "Welcome I am Nova, how can I assist you?",
   position: "bottom-right",
   theme: defaultTheme,
   useProxy: true,

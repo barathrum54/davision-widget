@@ -3,7 +3,7 @@ export interface Message {
   text: string;
   timestamp: Date;
   isUser: boolean;
-  status?: 'sending' | 'sent' | 'error';
+  status?: "sending" | "sent" | "error";
   products?: Product[];
 }
 
@@ -24,7 +24,7 @@ export interface ChatState {
 }
 
 export interface ChatActions {
-  sendMessage: (text: string) => Promise<void>;
+  sendMessage: (text: string, buttonLabel?: string) => Promise<void>;
   toggleChat: () => void;
   clearMessages: () => void;
   retryMessage: (messageId: string) => void;
@@ -39,4 +39,4 @@ export interface ChatResponse {
   products?: Product[];
   response_type: 0 | 1;
   shouldSendFollowUp?: boolean;
-} 
+}

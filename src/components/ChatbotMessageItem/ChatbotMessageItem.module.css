@@ -48,6 +48,30 @@
   border: 1px solid #ffcdd2;
 }
 
+.userMessage.sendingMessage .messageContent {
+  opacity: 0.6;
+  background-color: #8d6e63;
+}
+
+.sendingMessage .messageContent::after {
+  content: "...";
+  animation: dots 1.5s infinite;
+  margin-left: 4px;
+}
+
+@keyframes dots {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .messageText {
   margin-bottom: 4px;
   word-break: break-word;

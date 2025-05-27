@@ -57,10 +57,10 @@ export class ChatService {
     apiService.setHeaders(headers);
   }
 
-  async sendMessage(text: string): Promise<ChatResponse> {
+  async sendMessage(text: string, buttonLabel?: string): Promise<ChatResponse> {
     try {
       // Get response from API service
-      const response = await apiService.sendMessage(text);
+      const response = await apiService.sendMessage(text, buttonLabel);
 
       // Add shouldSendFollowUp flag for potential future use
       const chatResponse: ChatResponse = {

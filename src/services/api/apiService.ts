@@ -247,12 +247,12 @@ class ApiService {
     return "Desktop";
   }
 
-  async sendMessage(text: string): Promise<ChatResponse> {
+  async sendMessage(text: string, buttonLabel?: string): Promise<ChatResponse> {
     try {
       // Track sending message
       analyticsService.trackEvent({
         eventType: "send_message",
-        eventData: { message: text },
+        eventData: { message: text, buttonLabel },
       });
 
       // If we have a real API URL, make the actual request
@@ -260,7 +260,7 @@ class ApiService {
         // Prepare analytics payload for ChatInteractions table
         const requestBody = {
           EventType: "send_message",
-          ButtonLabel: null,
+          ButtonLabel: buttonLabel || null,
           UserAgent: navigator.userAgent,
           ScreenResolution: `${window.screen.width}x${window.screen.height}`,
           OperatingSystem: this.getOperatingSystem(),
@@ -295,10 +295,17 @@ class ApiService {
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(
+            `HTTP error! status: ${response.status} ${response.statusText}`
+          );
         }
 
-        const data = await response.json();
+        let data;
+        try {
+          data = await response.json();
+        } catch (parseError) {
+          throw new Error(`Failed to parse response JSON: ${parseError}`);
+        }
 
         // Track successful response
         analyticsService.trackEvent({

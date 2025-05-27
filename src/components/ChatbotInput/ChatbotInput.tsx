@@ -10,7 +10,7 @@ interface Window {
 }
 
 interface ChatbotInputProps {
-  onSendMessage: (text: string) => Promise<void>;
+  onSendMessage: (text: string, buttonLabel?: string) => Promise<void>;
   placeholder?: string;
   maxLength?: number;
   enableVoice?: boolean;
@@ -32,6 +32,9 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
 }) => {
   const [message, setMessage] = useState("");
   const [isListening, setIsListening] = useState(false);
+  const [inputMethod, setInputMethod] = useState<"keyboard" | "voice" | null>(
+    null
+  );
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
 
@@ -53,6 +56,7 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
             // Append to existing message if there's already text
             return prevMessage ? `${prevMessage} ${transcript}` : transcript;
           });
+          setInputMethod("voice"); // Mark as voice input
           setIsListening(false);
         };
 
@@ -74,17 +78,31 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
     };
   }, [enableVoice]);
 
-  const handleSend = async () => {
+  const handleSend = async (
+    sendMethod: "ui_submit" | "keyboard_enter" = "ui_submit"
+  ) => {
     if (message.trim() && !isLoading) {
       const trimmedMessage = message.trim();
+
+      // Determine button label based on input method and send method
+      let buttonLabel: string;
+      if (inputMethod === "voice") {
+        buttonLabel = "voice_button";
+      } else if (sendMethod === "keyboard_enter") {
+        buttonLabel = "keyboard_enter";
+      } else {
+        buttonLabel = "ui_submit";
+      }
+
       setMessage("");
+      setInputMethod(null); // Reset input method
 
       // Explicitly blur the input to remove focus
       if (inputRef.current) {
         inputRef.current.blur();
       }
 
-      await onSendMessage(trimmedMessage);
+      await onSendMessage(trimmedMessage, buttonLabel);
 
       // Don't re-focus after sending
       /*
@@ -98,12 +116,22 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      handleSend("keyboard_enter");
 
       // Ensure focus is removed when sending via Enter key
       if (inputRef.current) {
         inputRef.current.blur();
       }
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value.slice(0, maxLength);
+    setMessage(newValue);
+
+    // If user is typing and it's not from voice, mark as keyboard input
+    if (newValue && inputMethod !== "voice") {
+      setInputMethod("keyboard");
     }
   };
 
@@ -123,6 +151,7 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
           setMessage((prevMessage) => {
             return prevMessage ? `${prevMessage} ${transcript}` : transcript;
           });
+          setInputMethod("voice"); // Mark as voice input
           setIsListening(false);
         };
 
@@ -174,7 +203,7 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
           className={styles.input}
           placeholder={placeholder}
           value={message}
-          onChange={(e) => setMessage(e.target.value.slice(0, maxLength))}
+          onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
@@ -188,7 +217,7 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
         )}
         <button
           className={styles.sendButton}
-          onClick={handleSend}
+          onClick={() => handleSend()}
           disabled={!message.trim() || isLoading || disabled}
           aria-label="Send message"
         >

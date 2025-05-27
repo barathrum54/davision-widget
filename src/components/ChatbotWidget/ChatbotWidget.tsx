@@ -72,7 +72,7 @@ const ChatbotWidgetInner: React.FC = () => {
   // This handler will be called BEFORE blur events due to using mousedown
   const handleReplyClick = (text: string) => {
     preventCloseRef.current = true;
-    sendMessage(text);
+    sendMessage(text, "quick_reply");
 
     setTimeout(() => {
       setIsInputFocused(false);
