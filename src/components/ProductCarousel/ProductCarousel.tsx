@@ -18,12 +18,6 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   // Get all products to display, with duplicates for infinite scroll
   const allProducts = [...products, ...products, ...products];
 
-  // Get viewable products (current item and next item)
-  const getVisibleProducts = () => {
-    const startIdx = currentIndex;
-    return allProducts.slice(startIdx, startIdx + 2);
-  };
-
   // Update carousel transform after index change
   useEffect(() => {
     if (!productsContainerRef.current) return;
@@ -159,8 +153,6 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
   if (!products || products.length === 0) {
     return null;
   }
-
-  const visibleProducts = getVisibleProducts();
 
   return (
     <div className={styles.carousel} ref={containerRef}>

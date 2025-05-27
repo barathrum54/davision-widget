@@ -20,19 +20,17 @@ const ChatbotButton: React.FC<ChatbotButtonProps> = ({
     setIsClicked(true);
     setIsHidden(true); // Hide immediately to prevent visual glitch
 
-    // Check if we're on responsive screen (mobile/tablet)
-    const isResponsive = window.innerWidth < 1024;
-
     // Handle resize for both iframe and development contexts
     if (window.parent !== window) {
       // We're in an iframe, use postMessage to parent
       window.parent.postMessage({ type: "CHATBOT_RESIZE", isOpen: true }, "*");
     } else {
       // We're in direct rendering (development), use global function
-      if ((window as any).handleChatbotResize) {
-        (window as any).handleChatbotResize(true);
-      } else {
-        console.log("Button: Global function does not exist!");
+      const globalWindow = window as unknown as {
+        handleChatbotResize?: (isOpen: boolean) => void;
+      };
+      if (globalWindow.handleChatbotResize) {
+        globalWindow.handleChatbotResize(true);
       }
     }
 

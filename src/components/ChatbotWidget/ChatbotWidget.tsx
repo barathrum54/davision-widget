@@ -133,10 +133,11 @@ const ChatbotWidgetInner: React.FC = () => {
       );
     } else {
       // We're in direct rendering (development), use global function
-      if ((window as any).handleChatbotResize) {
-        (window as any).handleChatbotResize(!isOpen);
-      } else {
-        console.log("Global function does not exist!");
+      const globalWindow = window as unknown as {
+        handleChatbotResize?: (isOpen: boolean) => void;
+      };
+      if (globalWindow.handleChatbotResize) {
+        globalWindow.handleChatbotResize(!isOpen);
       }
     }
 

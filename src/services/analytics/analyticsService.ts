@@ -1,8 +1,14 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export interface AnalyticsEvent {
-  eventType: 'send_message' | 'click_quick_reply' | 'open_chat' | 'close_chat' | 'view_product' | 'page_view';
-  eventData?: Record<string, any>;
+  eventType:
+    | "send_message"
+    | "click_quick_reply"
+    | "open_chat"
+    | "close_chat"
+    | "view_product"
+    | "page_view";
+  eventData?: Record<string, unknown>;
 }
 
 export interface DeviceInfo {
@@ -38,7 +44,8 @@ class AnalyticsService {
   private localStorage: Storage | null;
 
   constructor() {
-    this.localStorage = typeof window !== 'undefined' ? window.localStorage : null;
+    this.localStorage =
+      typeof window !== "undefined" ? window.localStorage : null;
     this.sessionId = this.getOrCreateSessionId();
   }
 
@@ -48,73 +55,73 @@ class AnalyticsService {
 
   private getOrCreateSessionId(): string {
     if (!this.localStorage) return uuidv4();
-    
-    const sessionId = this.localStorage.getItem('davision_session_id');
+
+    const sessionId = this.localStorage.getItem("davision_session_id");
     if (sessionId) return sessionId;
-    
+
     const newSessionId = uuidv4();
-    this.localStorage.setItem('davision_session_id', newSessionId);
+    this.localStorage.setItem("davision_session_id", newSessionId);
     return newSessionId;
   }
 
   private getDeviceInfo(): DeviceInfo {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return {
-        browser: 'unknown',
-        browserVersion: 'unknown',
-        os: 'unknown',
-        osVersion: 'unknown',
-        deviceType: 'unknown',
-        screenResolution: 'unknown',
-        userAgent: 'unknown',
-        language: 'unknown',
+        browser: "unknown",
+        browserVersion: "unknown",
+        os: "unknown",
+        osVersion: "unknown",
+        deviceType: "unknown",
+        screenResolution: "unknown",
+        userAgent: "unknown",
+        language: "unknown",
       };
     }
 
     const ua = navigator.userAgent;
-    let browser = 'unknown';
-    let browserVersion = 'unknown';
-    let os = 'unknown';
-    let osVersion = 'unknown';
-    let deviceType = 'desktop';
+    let browser = "unknown";
+    let browserVersion = "unknown";
+    let os = "unknown";
+    let osVersion = "unknown";
+    let deviceType = "desktop";
 
-    if (ua.indexOf('Chrome') !== -1) {
-      browser = 'Chrome';
+    if (ua.indexOf("Chrome") !== -1) {
+      browser = "Chrome";
       browserVersion = ua.match(/Chrome\/(\d+\.\d+)/)![1];
-    } else if (ua.indexOf('Firefox') !== -1) {
-      browser = 'Firefox';
+    } else if (ua.indexOf("Firefox") !== -1) {
+      browser = "Firefox";
       browserVersion = ua.match(/Firefox\/(\d+\.\d+)/)![1];
-    } else if (ua.indexOf('Safari') !== -1) {
-      browser = 'Safari';
+    } else if (ua.indexOf("Safari") !== -1) {
+      browser = "Safari";
       browserVersion = ua.match(/Version\/(\d+\.\d+)/)![1];
-    } else if (ua.indexOf('MSIE') !== -1 || ua.indexOf('Trident/') !== -1) {
-      browser = 'Internet Explorer';
+    } else if (ua.indexOf("MSIE") !== -1 || ua.indexOf("Trident/") !== -1) {
+      browser = "Internet Explorer";
       browserVersion = ua.match(/(?:MSIE |rv:)(\d+\.\d+)/)![1];
-    } else if (ua.indexOf('Edge') !== -1) {
-      browser = 'Edge';
+    } else if (ua.indexOf("Edge") !== -1) {
+      browser = "Edge";
       browserVersion = ua.match(/Edge\/(\d+\.\d+)/)![1];
     }
 
-    if (ua.indexOf('Windows') !== -1) {
-      os = 'Windows';
+    if (ua.indexOf("Windows") !== -1) {
+      os = "Windows";
       osVersion = ua.match(/Windows NT (\d+\.\d+)/)![1];
-    } else if (ua.indexOf('Mac') !== -1) {
-      os = 'MacOS';
-      osVersion = ua.match(/Mac OS X (\d+[._]\d+)/)![1].replace('_', '.');
-    } else if (ua.indexOf('Linux') !== -1) {
-      os = 'Linux';
-    } else if (ua.indexOf('Android') !== -1) {
-      os = 'Android';
+    } else if (ua.indexOf("Mac") !== -1) {
+      os = "MacOS";
+      osVersion = ua.match(/Mac OS X (\d+[._]\d+)/)![1].replace("_", ".");
+    } else if (ua.indexOf("Linux") !== -1) {
+      os = "Linux";
+    } else if (ua.indexOf("Android") !== -1) {
+      os = "Android";
       osVersion = ua.match(/Android (\d+\.\d+)/)![1];
-      deviceType = 'mobile';
-    } else if (ua.indexOf('iPhone') !== -1 || ua.indexOf('iPad') !== -1) {
-      os = 'iOS';
-      osVersion = ua.match(/OS (\d+_\d+)/)![1].replace('_', '.');
-      deviceType = ua.indexOf('iPad') !== -1 ? 'tablet' : 'mobile';
+      deviceType = "mobile";
+    } else if (ua.indexOf("iPhone") !== -1 || ua.indexOf("iPad") !== -1) {
+      os = "iOS";
+      osVersion = ua.match(/OS (\d+_\d+)/)![1].replace("_", ".");
+      deviceType = ua.indexOf("iPad") !== -1 ? "tablet" : "mobile";
     }
 
-    if (deviceType === 'desktop' && window.innerWidth <= 768) {
-      deviceType = 'mobile';
+    if (deviceType === "desktop" && window.innerWidth <= 768) {
+      deviceType = "mobile";
     }
 
     return {
@@ -130,12 +137,12 @@ class AnalyticsService {
   }
 
   private getPageInfo(): PageInfo {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return {
-        url: '',
-        path: '',
-        title: '',
-        referrer: '',
+        url: "",
+        path: "",
+        title: "",
+        referrer: "",
       };
     }
 
@@ -161,16 +168,16 @@ class AnalyticsService {
 
     try {
       await fetch(this.apiEndpoint, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(trackingData),
       });
-    } catch (error) {
+    } catch {
       // Silent fail in production
     }
   }
 }
 
-export const analyticsService = new AnalyticsService(); 
+export const analyticsService = new AnalyticsService();

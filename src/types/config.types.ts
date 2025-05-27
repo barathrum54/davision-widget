@@ -33,7 +33,7 @@ export interface WidgetConfig {
   enableFileUpload?: boolean;
   maxMessageLength?: number;
   persistMessages?: boolean;
-  customStyles?: Record<string, any>;
+  customStyles?: Record<string, unknown>;
   productCarouselEnabled?: boolean;
   quickReplies?: QuickReply[];
   avatarSrc?: string;

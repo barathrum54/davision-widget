@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import type { Message, ChatState } from "../types/chat.types";
 import type { WidgetConfig } from "../types/config.types";
 import { generateId } from "../utils/helpers";
@@ -19,12 +19,21 @@ export const useChat = (config: WidgetConfig = {}) => {
 
   const checkIntervalRef = useRef<number | null>(null);
 
-  const chatService = new ChatService({
-    apiEndpoint: config.apiEndpoint,
-    apiKey: config.apiKey,
-    headers: config.headers,
-    analyticsEndpoint: config.analyticsEndpoint,
-  });
+  const chatService = useMemo(
+    () =>
+      new ChatService({
+        apiEndpoint: config.apiEndpoint,
+        apiKey: config.apiKey,
+        headers: config.headers,
+        analyticsEndpoint: config.analyticsEndpoint,
+      }),
+    [
+      config.apiEndpoint,
+      config.apiKey,
+      config.headers,
+      config.analyticsEndpoint,
+    ]
+  );
 
   const checkNetworkConnectivity = useCallback(() => {
     const isOnline = navigator.onLine;

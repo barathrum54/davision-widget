@@ -79,7 +79,6 @@ export const createResizeHandler = (getWrapper: () => HTMLElement | null) => {
         wrapper.classList.add("chat-open");
       } else {
         wrapper.classList.remove("chat-open");
-        console.log("Removed chat-open class");
       }
     }
   };

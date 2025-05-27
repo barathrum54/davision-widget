@@ -33,7 +33,9 @@ let widgetContainer: HTMLElement | null = null;
 let widgetWrapper: HTMLElement | null = null;
 
 // Global function for development mode to handle chat state changes
-(window as any).handleChatbotResize = createResizeHandler(() => widgetWrapper);
+(
+  window as unknown as { handleChatbotResize: (isOpen: boolean) => void }
+).handleChatbotResize = createResizeHandler(() => widgetWrapper);
 
 /**
  * Initialize the widget for development

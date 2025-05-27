@@ -268,12 +268,6 @@ class ApiService {
       // Get the final URL (with or without proxy)
       const finalUrl = this.getRequestUrl(this.apiUrl);
 
-      console.log(
-        `🔗 Using ${
-          this.useProxy ? "CORS proxy" : "direct"
-        } request to: ${finalUrl}`
-      );
-
       // Prepare headers with dynamic Origin
       const requestHeaders = {
         ...this.headers,

@@ -4,9 +4,44 @@ import styles from "./ChatbotInput.module.css";
 import { SEND_ICON, MICROPHONE_ICON } from "../../assets/base64Images";
 
 // Add SpeechRecognition type definitions
-interface Window {
-  SpeechRecognition: any;
-  webkitSpeechRecognition: any;
+interface SpeechRecognitionResult {
+  transcript: string;
+}
+
+interface SpeechRecognitionResultList {
+  [index: number]: SpeechRecognitionResult;
+  length: number;
+}
+
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList[];
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string;
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+}
+
+interface SpeechRecognitionConstructor {
+  new (): SpeechRecognition;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  }
 }
 
 interface ChatbotInputProps {
@@ -36,21 +71,20 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
     null
   );
   const inputRef = useRef<HTMLInputElement>(null);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   // Initialize speech recognition
   useEffect(() => {
     if (enableVoice) {
       const SpeechRecognition =
-        (window as any).SpeechRecognition ||
-        (window as any).webkitSpeechRecognition;
+        window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRecognition) {
         recognitionRef.current = new SpeechRecognition();
         recognitionRef.current.continuous = false;
         recognitionRef.current.interimResults = false;
         recognitionRef.current.lang = "tr-TR";
 
-        recognitionRef.current.onresult = (event: any) => {
+        recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
           const transcript = event.results[0][0].transcript;
           setMessage((prevMessage) => {
             // Append to existing message if there's already text
@@ -60,7 +94,9 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
           setIsListening(false);
         };
 
-        recognitionRef.current.onerror = (event: any) => {
+        recognitionRef.current.onerror = (
+          event: SpeechRecognitionErrorEvent
+        ) => {
           console.error("Speech recognition error", event.error);
           setIsListening(false);
         };
@@ -138,15 +174,14 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
   const handleVoiceInput = () => {
     if (!recognitionRef.current) {
       const SpeechRecognition =
-        (window as any).SpeechRecognition ||
-        (window as any).webkitSpeechRecognition;
+        window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRecognition) {
         recognitionRef.current = new SpeechRecognition();
         recognitionRef.current.continuous = false;
         recognitionRef.current.interimResults = false;
         recognitionRef.current.lang = "tr-TR";
 
-        recognitionRef.current.onresult = (event: any) => {
+        recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
           const transcript = event.results[0][0].transcript;
           setMessage((prevMessage) => {
             return prevMessage ? `${prevMessage} ${transcript}` : transcript;
@@ -155,7 +190,9 @@ const ChatbotInput: React.FC<ChatbotInputProps> = ({
           setIsListening(false);
         };
 
-        recognitionRef.current.onerror = (event: any) => {
+        recognitionRef.current.onerror = (
+          event: SpeechRecognitionErrorEvent
+        ) => {
           console.error("Speech recognition error", event.error);
           setIsListening(false);
         };

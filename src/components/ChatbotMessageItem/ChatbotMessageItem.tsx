@@ -1,6 +1,5 @@
 import React from "react";
 import type { Message } from "../../types/chat.types";
-import { formatTimestamp } from "../../utils/helpers";
 import styles from "./ChatbotMessageItem.module.css";
 import ProductCarousel from "../ProductCarousel/ProductCarousel";
 
@@ -13,7 +12,7 @@ const ChatbotMessageItem: React.FC<ChatbotMessageItemProps> = ({
   message,
   onRetry,
 }) => {
-  const { text, isUser, status, timestamp, products } = message;
+  const { text, isUser, status, products } = message;
 
   const hasProducts = !isUser && products && products.length > 0;
   const showText = text.trim() !== "";

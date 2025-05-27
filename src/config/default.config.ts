@@ -38,15 +38,13 @@ export const defaultConfig: WidgetConfig = {
   logoSrc: "",
 };
 
-let chatService: ChatService;
-
 export const createConfig = (
   userConfig: Partial<WidgetConfig> = {}
 ): WidgetConfig => {
   const config = { ...defaultConfig, ...userConfig };
 
   // Initialize chat service with API configuration including proxy options
-  chatService = new ChatService({
+  new ChatService({
     apiEndpoint: config.apiEndpoint,
     apiKey: config.apiKey,
     headers: config.headers,
